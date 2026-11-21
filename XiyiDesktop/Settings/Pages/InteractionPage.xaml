@@ -9,9 +9,6 @@
             <TextBlock x:Uid="InteractionPageTitle"
                        FontSize="28"
                        FontWeight="SemiBold"/>
-            <TextBlock x:Uid="InteractionPageDescription"
-                       TextWrapping="Wrap"
-                       Opacity="0.78"/>
 
             <muxc:SettingsCard x:Uid="Settings_SoundCard"
                                    HorizontalAlignment="Stretch"

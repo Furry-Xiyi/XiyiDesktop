@@ -17,6 +17,7 @@ using Windows.UI;
 using XiyiDesktop;
 using XiyiDesktop.Widgets.Hosting;
 using XiyiDesktop.Widgets.UI;
+using XiyiDesktop.Power;
 
 namespace XiyiDesktop
 {
@@ -68,6 +69,7 @@ namespace XiyiDesktop
                 _dispatcherQueue?.TryEnqueue(HandleRedirectedActivation);
 
             AppThemeManager.LoadSettings();
+            PowerSoundMonitor.Start();
             ShowDesktopWindow();
             if (appUserModelId.EndsWith("!DesktopSettings", StringComparison.OrdinalIgnoreCase) ||
                 ConsumeSettingsActivationRequests())
@@ -153,10 +155,7 @@ namespace XiyiDesktop
             {
                 window = new DesktopWindow();
                 DesktopHostWindow = window;
-                WindowIconAssetResolver.AssignPackageApplicationIdentity(window, "App");
-                window.AppWindow.Title = new ResourceLoader().GetString("AppDisplayName");
-                try { window.AppWindow.SetIcon("Assets/AppIcon.ico"); } catch { }
-                window.Activate();
+                WindowIconAssetResolver.AssignPackageApplicationIdentity(window.WindowHandle, "App");
                 return;
             }
 
@@ -186,6 +185,8 @@ namespace XiyiDesktop
 
             if (!string.IsNullOrWhiteSpace(pageTag))
                 window.NavigateToPage(pageTag);
+            window.AppWindow.Show();
+            window.Activate();
             BringWindowToFront(WinRT.Interop.WindowNative.GetWindowHandle(window));
         }
 
@@ -194,7 +195,7 @@ namespace XiyiDesktop
             var window = WidgetPicker;
             if (window is null)
             {
-                window = new WidgetPickerWindow();
+                window = new WidgetPickerWindow(MinWidth: 800, MinHeight: 640, MaxWidth: 1200, MaxHeight: 850);
                 WidgetPicker = window;
                 AppThemeManager.ApplyMaterial(window);
                 window.AddRequested += async (_, request) =>
@@ -253,16 +254,19 @@ namespace XiyiDesktop
         internal static void RecreateDesktopWindow()
         {
             var previous = DesktopHostWindow;
+            DesktopHostWindow = null;
+            try { previous?.Dispose(); } catch { }
+
             var window = new DesktopWindow();
             DesktopHostWindow = window;
-            WindowIconAssetResolver.AssignPackageApplicationIdentity(window, "App");
-            window.AppWindow.Title = new ResourceLoader().GetString("AppDisplayName");
-            try { window.AppWindow.SetIcon("Assets/AppIcon.ico"); } catch { }
-            window.Activate();
-            try { previous?.Close(); } catch { }
+            WindowIconAssetResolver.AssignPackageApplicationIdentity(window.WindowHandle, "App");
         }
 
-        internal static void RequestExit() => Current.Exit();
+        internal static void RequestExit()
+        {
+            PowerSoundMonitor.Stop();
+            Current.Exit();
+        }
 
         [DllImport("user32.dll")] private static extern bool IsIconic(IntPtr hwnd);
         [DllImport("user32.dll")] private static extern bool ShowWindow(IntPtr hwnd, int command);
@@ -307,6 +311,7 @@ namespace XiyiDesktop
                 ApplyMaterial(settingsWindow);
             if (App.WidgetPicker is { } widgetPicker)
                 ApplyMaterial(widgetPicker);
+            App.DesktopHostWindow?.UpdateWidgetMaterial(CurrentMaterial);
         }
 
         public static void ApplyMaterial(Window window)
@@ -447,6 +452,42 @@ namespace XiyiDesktop
             set => Set("EnableSound", value.ToString());
         }
 
+        public static bool PowerSoundsEnabled
+        {
+            get => bool.TryParse(Get("PowerSoundsEnabled", "true"), out bool enabled) && enabled;
+            set => Set("PowerSoundsEnabled", value.ToString());
+        }
+
+        public static bool UseCustomPowerSounds
+        {
+            get => bool.TryParse(Get("UseCustomPowerSounds", "false"), out bool enabled) && enabled;
+            set => Set("UseCustomPowerSounds", value.ToString());
+        }
+
+        public static string PowerConnectedSoundPath
+        {
+            get => Get("PowerConnectedSoundPath", string.Empty);
+            set => Set("PowerConnectedSoundPath", value);
+        }
+
+        public static string PowerDisconnectedSoundPath
+        {
+            get => Get("PowerDisconnectedSoundPath", string.Empty);
+            set => Set("PowerDisconnectedSoundPath", value);
+        }
+
+        public static bool PowerConnectedSoundEnabled
+        {
+            get => bool.TryParse(Get("PowerConnectedSoundEnabled", "true"), out bool enabled) && enabled;
+            set => Set("PowerConnectedSoundEnabled", value.ToString());
+        }
+
+        public static bool PowerDisconnectedSoundEnabled
+        {
+            get => bool.TryParse(Get("PowerDisconnectedSoundEnabled", "true"), out bool enabled) && enabled;
+            set => Set("PowerDisconnectedSoundEnabled", value.ToString());
+        }
+
         public static string DesktopIconSize
         {
             get => Get("DesktopIconSize", "Medium");
@@ -460,7 +501,7 @@ namespace XiyiDesktop
                 var value = Get("DesktopIconCustomSize", string.Empty);
                 return double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out var size) &&
                     double.IsFinite(size)
-                    ? Math.Clamp(size, 24, 160)
+                    ? Math.Clamp(size, DesktopIconMetrics.Minimum, DesktopIconMetrics.Maximum)
                     : null;
             }
             set => Set("DesktopIconCustomSize", value?.ToString("0.###", CultureInfo.InvariantCulture) ?? string.Empty);
@@ -513,6 +554,23 @@ namespace XiyiDesktop
         {
             get => bool.TryParse(Get("ShowShortcutArrows", "true"), out bool visible) && visible;
             set => Set("ShowShortcutArrows", value.ToString());
+        }
+
+        public static double DesktopCornerRadius
+        {
+            get
+            {
+                var value = Get("DesktopCornerRadius", "8");
+                return double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out var radius) &&
+                    double.IsFinite(radius)
+                    ? Math.Clamp(radius, 0, 32)
+                    : 8;
+            }
+            set
+            {
+                var radius = double.IsFinite(value) ? Math.Clamp(value, 0, 32) : 8;
+                Set("DesktopCornerRadius", radius.ToString("0.###", CultureInfo.InvariantCulture));
+            }
         }
 
         public static bool AlignIconsToGrid

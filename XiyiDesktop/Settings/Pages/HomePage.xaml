@@ -8,9 +8,6 @@
             <TextBlock x:Uid="SettingsHomeTitle"
                        FontSize="28"
                        FontWeight="SemiBold"/>
-            <TextBlock x:Uid="SettingsHomeDescription"
-                       TextWrapping="Wrap"
-                       Opacity="0.78"/>
             <Button x:Uid="SettingsHomeOpenDesktop"
                     HorizontalAlignment="Left"
                     Click="OpenDesktop_Click"

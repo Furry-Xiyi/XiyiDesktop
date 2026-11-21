@@ -34,20 +34,32 @@ internal sealed class DesktopLayoutStore
 
     public bool TryGetPosition(string identity, out double x, out double y)
     {
-        lock (_sync)
+        if (TryGetPosition(identity, out DesktopItemPosition position))
         {
-            var position = (_layout.Positions ?? []).FirstOrDefault(item =>
-                string.Equals(item.Identity, identity, StringComparison.OrdinalIgnoreCase));
-            if (position is not null)
-            {
-                x = position.X;
-                y = position.Y;
-                return true;
-            }
+            x = position.X;
+            y = position.Y;
+            return true;
         }
 
         x = 0;
         y = 0;
+        return false;
+    }
+
+    public bool TryGetPosition(string identity, out DesktopItemPosition position)
+    {
+        lock (_sync)
+        {
+            var savedPosition = (_layout.Positions ?? []).FirstOrDefault(item =>
+                string.Equals(item.Identity, identity, StringComparison.OrdinalIgnoreCase));
+            if (savedPosition is not null)
+            {
+                position = savedPosition;
+                return true;
+            }
+        }
+
+        position = default!;
         return false;
     }
 
@@ -181,5 +193,10 @@ internal sealed class DesktopLayoutStore
 
     internal sealed record DesktopLayoutData(int Version, List<string> OrderedIdentities, List<DesktopItemPosition>? Positions);
 
-    internal sealed record DesktopItemPosition(string Identity, double X, double Y);
+    internal sealed record DesktopItemPosition(
+        string Identity,
+        double X,
+        double Y,
+        double ViewportWidth = 0,
+        double ViewportHeight = 0);
 }

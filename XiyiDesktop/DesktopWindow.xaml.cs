@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Input;
 using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.Windows.ApplicationModel.Resources;
@@ -36,11 +37,10 @@ using XiyiDesktop.Widgets.Hosting;
 using XiyiDesktop.Widgets.Models;
 using XiyiDesktop.Widgets.UI;
 using Microsoft.Windows.Widgets;
-using WinRT;
 
 namespace XiyiDesktop
 {
-    public sealed partial class DesktopWindow : Window
+    public sealed partial class DesktopWindow : UserControl, IDisposable
     {
         private static readonly object SendToDestinationCacheLock = new();
         private static Task<IReadOnlyList<SendToDestination>>? _sendToDestinationCacheTask;
@@ -55,8 +55,10 @@ namespace XiyiDesktop
         private readonly WidgetHostingService _widgetHostingService = App.WidgetHostService;
         private readonly Dictionary<string, WidgetDesktopSurface> _widgetSurfaces = new(StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<string, WebWidgetOverlayWindow> _webWidgetOverlays = new(StringComparer.OrdinalIgnoreCase);
+        private readonly TaskCompletionSource<bool> _initialDesktopItemsLayoutReady = new(TaskCreationOptions.RunContinuationsAsynchronously);
         private WidgetCardControl? _widgetDragSurface;
         private DesktopLayoutTransaction? _widgetDragTransaction;
+        private readonly Dictionary<string, DesktopLayoutEngine.Point> _widgetDragOriginalPositions = new(StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<DesktopItemViewModel, Windows.Foundation.Point> _widgetDragIconPositions = [];
         private uint _widgetDragPointerId;
         private Windows.Foundation.Point _widgetDragStart;
@@ -67,9 +69,9 @@ namespace XiyiDesktop
         private readonly DispatcherQueue? _dispatcherQueue;
         private readonly HashSet<string> _cutDesktopItemPaths = new(StringComparer.OrdinalIgnoreCase);
         private readonly Grid _desktopRoot;
+        private DesktopWindowXamlSource? _desktopXamlSource;
         private readonly TranslateTransform _workAreaTransitionTransform = new();
         private Storyboard? _workAreaTransitionStoryboard;
-        private Windows.UI.Composition.CompositionColorBrush? _transparentBackdropBrush;
         private readonly MenuFlyout _desktopContextFlyout;
         private readonly List<RadioMenuFlyoutItem> _iconSizeMenuItems = [];
         private readonly List<RadioMenuFlyoutItem> _sortMenuItems = [];
@@ -185,8 +187,8 @@ namespace XiyiDesktop
         private DispatcherQueueTimer? _widgetOverlayLayoutTimer;
         private DispatcherQueueTimer? _iconDragPreviewTimer;
         private DateTimeOffset _widgetOverlayLayoutTrackingUntilUtc;
-        private const double MinimumDesktopIconSize = 24;
-        private const double MaximumDesktopIconSize = 160;
+        private const double MinimumDesktopIconSize = DesktopIconMetrics.Minimum;
+        private const double MaximumDesktopIconSize = DesktopIconMetrics.Maximum;
         private const double DesktopEdgePadding = 8;
         private bool _hasAppliedWorkAreaMargins;
 
@@ -229,6 +231,9 @@ namespace XiyiDesktop
             InitializeComponent();
 
             _desktopRoot = (Grid)Content;
+            UpdateCornerRadiusSetting(AppSettingsStore.DesktopCornerRadius);
+            if (MarqueeFadeOut.Children.Count > 0)
+                Storyboard.SetTarget(MarqueeFadeOut.Children[0], SelectionRectangle);
             DesktopSurface.RenderTransform = _workAreaTransitionTransform;
             DesktopItemsView.Margin = new Thickness(0);
             _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
@@ -245,9 +250,8 @@ namespace XiyiDesktop
             DesktopItemsView.DragReflowed += DesktopItemsView_DragReflowed;
             UpdateReorderAvailability();
 
-            _windowHandle = WinRT.Interop.WindowNative.GetWindowHandle(this);
+            _windowHandle = DesktopCarrierWindow.Create();
             UpdateUndoDeleteVisibility();
-            EnableTransparentCompositionBackdrop();
             _itemsService.ItemsChanged += ItemsService_ItemsChanged;
             Clipboard.ContentChanged += Clipboard_ContentChanged;
             Items.CollectionChanged += Items_CollectionChanged;
@@ -269,12 +273,12 @@ namespace XiyiDesktop
                 0,
                 0,
                 WineventOutOfContext);
-            Closed += DesktopWindow_Closed;
             _desktopRoot.Loaded += DesktopRoot_Loaded;
             DesktopItemsView.AddHandler(UIElement.PointerPressedEvent, new PointerEventHandler(WidgetCard_PointerPressed), handledEventsToo: true);
             DesktopItemsView.AddHandler(UIElement.PointerMovedEvent, new PointerEventHandler(WidgetCard_PointerMoved), handledEventsToo: true);
             DesktopItemsView.AddHandler(UIElement.PointerReleasedEvent, new PointerEventHandler(WidgetCard_PointerReleased), handledEventsToo: true);
             DesktopItemsView.AddHandler(UIElement.PointerCanceledEvent, new PointerEventHandler(WidgetCard_PointerCanceled), handledEventsToo: true);
+            AttachDesktopRootToXamlIsland();
         }
 
         public ObservableCollection<DesktopItemViewModel> Items { get; } = new();
@@ -283,52 +287,57 @@ namespace XiyiDesktop
 
         internal bool IsDesktopAttached => _hostController?.IsAttached == true;
 
-        private void EnableTransparentCompositionBackdrop()
+        internal void UpdateWidgetMaterial(BackgroundMaterial material)
         {
+            foreach (var surface in _widgetSurfaces.Values)
+                surface.Card.UpdateBackgroundMaterial(material);
+        }
+
+        internal void UpdateCornerRadiusSetting(double cornerRadius)
+        {
+            cornerRadius = double.IsFinite(cornerRadius) ? Math.Clamp(cornerRadius, 0, 32) : 8;
+            var radius = new CornerRadius(cornerRadius);
+            SelectionRectangle.CornerRadius = radius;
+
+            foreach (var item in Items)
+                item.SetCornerRadius(cornerRadius);
+
+            foreach (var surface in _widgetSurfaces.Values)
+            {
+                surface.Card.UpdateCornerRadius(cornerRadius);
+                UpdateWebWidgetOverlay(surface);
+            }
+        }
+
+        private void AttachDesktopRootToXamlIsland()
+        {
+            DesktopWindowXamlSource? island = null;
             try
             {
-                var target = this.As<Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop>();
-                if (_transparentBackdropBrush is null)
+                // Host the desktop tree directly in an island under a borderless
+                // native HWND. There is no outer WinUI Window to paint an opaque fill.
+                island = new DesktopWindowXamlSource();
+                island.Initialize(Microsoft.UI.Win32Interop.GetWindowIdFromWindow(_windowHandle));
+                if (island.SiteBridge is Microsoft.UI.Content.DesktopChildSiteBridge childSiteBridge)
                 {
-                    // WinUI's DispatcherQueue is not the Windows.UI.Composition system
-                    // queue. Ensure the latter exists before constructing its compositor.
-                    _dispatcherQueue?.EnsureSystemDispatcherQueue();
-                    // A transparent CompositionBrush asks WinUI to preserve empty XAML
-                    // pixels instead of painting its default opaque window background.
-                    _transparentBackdropBrush = new Windows.UI.Composition.Compositor().CreateColorBrush(
-                        Windows.UI.Color.FromArgb(0, 0, 0, 0));
+                    childSiteBridge.ResizePolicy =
+                        Microsoft.UI.Content.ContentSizePolicy.ResizeContentToParentWindow;
                 }
-
-                // A theme change can rebuild WinUI's composition background. Reattach
-                // the same transparent brush after that rebuild instead of allocating
-                // another CompositionBrush every time.
-                target.SystemBackdrop = _transparentBackdropBrush;
+                island.Content = this;
+                _desktopRoot.Background = new SolidColorBrush(Windows.UI.Color.FromArgb(0, 0, 0, 0));
+                _desktopXamlSource = island;
             }
-            catch (Exception exception) when (exception is COMException or InvalidOperationException or ArgumentException or UnauthorizedAccessException)
+            catch (Exception exception)
             {
-                Debug.WriteLine($"Could not enable a transparent WinUI composition backdrop: {exception.Message}");
+                try { island?.Dispose(); } catch { }
+                Debug.WriteLine($"Could not host the desktop root in a WinUI XAML Island: {exception}");
             }
         }
 
         private void DesktopRoot_ActualThemeChanged(FrameworkElement sender, object args)
         {
-            RefreshTransparentCompositionBackdrop();
             foreach (var surface in _widgetSurfaces.Values)
                 _ = surface.Card.SetProviderIconAsync(GetWidgetIconPath(surface, _desktopRoot.ActualTheme));
-        }
-
-        internal void RefreshTransparentCompositionBackdrop()
-        {
-            if (_disposed)
-                return;
-
-            if (_dispatcherQueue is null)
-            {
-                EnableTransparentCompositionBackdrop();
-                return;
-            }
-
-            _dispatcherQueue.TryEnqueue(EnableTransparentCompositionBackdrop);
         }
 
         private const uint EventSystemDisplayChange = 0x001F;
@@ -563,8 +572,13 @@ namespace XiyiDesktop
                 return;
 
             _widgetsRestored = true;
+            await _initialDesktopItemsLayoutReady.Task;
+            if (_disposed)
+                return;
+
             var storedPlacements = _widgetPlacementStore.GetAll();
             var restoredDefinitions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var restoredCards = new List<WidgetCardControl>(storedPlacements.Count);
             foreach (var placement in storedPlacements)
             {
                 try
@@ -587,31 +601,49 @@ namespace XiyiDesktop
                     }
 
                     var instance = new SafeWidgetInstance(_widgetHostingService, widget.Id);
-                    if (!await instance.PopulateAsync())
-                    {
-                        _widgetPlacementStore.Remove(placement.InstanceId);
-                        continue;
-                    }
-
-                    var card = new WidgetCardControl(instance, placement.DisplayName, size, ParseSupportedWidgetSizes(placement.SupportedSizes));
+                    var displayName = string.IsNullOrWhiteSpace(placement.DisplayName)
+                        ? placement.DefinitionId
+                        : placement.DisplayName;
+                    var card = new WidgetCardControl(instance, displayName, size, ParseSupportedWidgetSizes(placement.SupportedSizes));
                     FitWidgetCardToDesktopGrid(card);
                     var layoutElement = CreateWidgetLayoutElement(card);
                     AttachWidgetCardHandlers(card);
                     DesktopItemsView.Children.Add(layoutElement);
                     DesktopItemsView.RegisterExternalLayoutItem(layoutElement);
-                    var x = placement.X;
-                    var y = placement.Y;
+                    card.ShowLoadingStatus();
+                    var viewportWidth = Math.Max(1, DesktopItemsView.ActualWidth);
+                    var viewportHeight = Math.Max(1, DesktopItemsView.ActualHeight);
+                    var x = ScaleCoordinate(placement.X, placement.ViewportWidth, viewportWidth);
+                    var y = ScaleCoordinate(placement.Y, placement.ViewportHeight, viewportHeight);
                     if (placement.CoordinateSpaceVersion < 1)
                     {
                         x -= DesktopSurface.Margin.Left;
                         y -= DesktopSurface.Margin.Top;
+                        var normalizedPlacement = placement with
+                        {
+                            X = x,
+                            Y = y,
+                            CoordinateSpaceVersion = 1,
+                            ViewportWidth = viewportWidth,
+                            ViewportHeight = viewportHeight
+                        };
+                        _widgetPlacementStore.Upsert(normalizedPlacement);
                     }
-                    ClampWidgetPosition(card, ref x, ref y);
-                    SnapWidgetPosition(card, ref x, ref y);
+                    else if (placement.ViewportWidth <= 0 || placement.ViewportHeight <= 0)
+                    {
+                        var normalizedPlacement = placement with
+                        {
+                            X = x,
+                            Y = y,
+                            ViewportWidth = viewportWidth,
+                            ViewportHeight = viewportHeight
+                        };
+                        _widgetPlacementStore.Upsert(normalizedPlacement);
+                    }
                     ClampWidgetPosition(card, ref x, ref y);
                     Canvas.SetLeft(layoutElement, x);
                     Canvas.SetTop(layoutElement, y);
-                    var surface = new WidgetDesktopSurface(widget.Id, placement.DefinitionId, placement.DisplayName, card, layoutElement, null, x, y)
+                    var surface = new WidgetDesktopSurface(widget.Id, placement.DefinitionId, displayName, card, layoutElement, null, x, y)
                     {
                         SupportedSizes = placement.SupportedSizes,
                         LightIconPath = placement.LightIconPath,
@@ -621,13 +653,9 @@ namespace XiyiDesktop
                     _widgetSurfaces[widget.Id] = surface;
                     surface.WebUri = card.ActiveWebContentUri;
                     restoredDefinitions.Add(placement.DefinitionId);
+                    restoredCards.Add(card);
                     RefreshSharedDesktopLayout();
                     await card.SetProviderIconAsync(GetWidgetIconPath(surface, _desktopRoot.ActualTheme));
-                    // WidgetHost and WebView2 providers both expose apartment-bound
-                    // native objects. Keep restore initialization serialized so
-                    // multiple desktop cards do not enter their native controllers
-                    // concurrently during Explorer-hosted startup.
-                    await card.LoadAsync();
                 }
                 catch (Exception exception)
                 {
@@ -637,12 +665,29 @@ namespace XiyiDesktop
             }
 
             ResolveWidgetCollisions(persistChanges: false);
-            SaveWidgetPlacements();
             RefreshSharedDesktopLayout();
-            SaveManualDesktopOrder();
+
+            // WidgetHost and WebView2 providers expose apartment-bound native
+            // objects, so initialize their controllers serially after all cards
+            // and their saved positions are already on the desktop.
+            foreach (var card in restoredCards)
+            {
+                if (_disposed)
+                    return;
+                await card.LoadAsync();
+            }
         }
 
         private void OpenWidgetPicker_Click(object sender, RoutedEventArgs e) => App.ShowWidgetPickerWindow();
+
+        private static double ScaleCoordinate(double coordinate, double sourceExtent, double targetExtent)
+        {
+            if (!double.IsFinite(coordinate) || !double.IsFinite(sourceExtent) || sourceExtent <= 0 ||
+                !double.IsFinite(targetExtent) || targetExtent <= 0)
+                return coordinate;
+
+            return coordinate * targetExtent / sourceExtent;
+        }
 
         private static WidgetSize ParseWidgetSize(string? sizeName) => sizeName?.Trim().ToLowerInvariant() switch
         {
@@ -662,7 +707,7 @@ namespace XiyiDesktop
         {
             var cell = DesktopItemsView.GetGridCellSize();
             var occupancy = WidgetCardControl.GetGridOccupancy(size, cell.Width, cell.Height);
-            var insets = DesktopItemsView.GetGridContentInsets();
+            var insets = GetWidgetVisualInsets();
             var width = Math.Max(1, DesktopItemsView.ActualWidth);
             var height = Math.Max(1, DesktopItemsView.ActualHeight);
             var desiredX = Math.Floor(Math.Max(0, width - occupancy.Width) / cell.Width) * cell.Width;
@@ -734,7 +779,7 @@ namespace XiyiDesktop
             var width = Math.Max(1, DesktopItemsView.ActualWidth > 0 ? DesktopItemsView.ActualWidth : _desktopRoot.ActualWidth);
             var height = Math.Max(1, DesktopItemsView.ActualHeight > 0 ? DesktopItemsView.ActualHeight : _desktopRoot.ActualHeight);
             var occupancy = GetWidgetOccupancyBounds(card, 0, 0);
-            var edgePadding = XiyiDesktop.AppSettingsStore.AlignIconsToGrid ? 0 : 8;
+            const double edgePadding = 8;
             var position = DesktopLayoutEngine.Clamp(
                 new DesktopLayoutEngine.Point(x, y),
                 new DesktopLayoutEngine.Size(width, height),
@@ -744,20 +789,7 @@ namespace XiyiDesktop
             y = position.Y;
         }
 
-        private void SnapWidgetPosition(WidgetCardControl card, ref double x, ref double y)
-        {
-            if (!XiyiDesktop.AppSettingsStore.AlignIconsToGrid)
-                return;
-
-            var cell = DesktopItemsView.GetGridCellSize();
-            var position = DesktopLayoutEngine.Snap(
-                new DesktopLayoutEngine.Point(x, y),
-                new DesktopLayoutEngine.Size(cell.Width, cell.Height));
-            x = position.X;
-            y = position.Y;
-        }
-
-        private void ApplyDesktopWidgetScale()
+        private void ApplyDesktopWidgetScale(bool persistPositions = true)
         {
             foreach (var surface in _widgetSurfaces.Values)
             {
@@ -767,23 +799,24 @@ namespace XiyiDesktop
                 var y = Canvas.GetTop(surface.LayoutElement);
                 var previousX = x;
                 var previousY = y;
-                SnapWidgetPosition(surface.Card, ref x, ref y);
                 ClampWidgetPosition(surface.Card, ref x, ref y);
                 SetWidgetPosition(surface, x, y, animate: x != previousX || y != previousY);
                 UpdateWebWidgetOverlay(surface);
             }
 
             ResolveWidgetCollisions(persistChanges: false);
-            SaveWidgetPlacements();
+            if (persistPositions)
+                SaveWidgetPlacements();
             RefreshSharedDesktopLayout();
-            SaveManualDesktopOrder();
+            if (persistPositions)
+                SaveManualDesktopOrder();
             App.WidgetPicker?.RefreshPlacementCheck();
         }
 
         private void FitWidgetCardToDesktopGrid(WidgetCardControl card)
         {
             var cell = DesktopItemsView.GetGridCellSize();
-            card.FitDesktopScaleToGrid(cell.Width, cell.Height, DesktopItemsView.GetGridContentInsets());
+            card.FitDesktopScaleToGrid(cell.Width, cell.Height, GetWidgetVisualInsets());
         }
 
         private FrameworkElement CreateWidgetLayoutElement(WidgetCardControl card)
@@ -804,7 +837,7 @@ namespace XiyiDesktop
             };
             host.Children.Add(new Border
             {
-                Padding = DesktopItemsView.GetGridContentInsets(),
+                Padding = GetWidgetVisualInsets(),
                 Child = content
             });
             return host;
@@ -858,7 +891,13 @@ namespace XiyiDesktop
             _widgetPlacementStore.UpsertRange(_widgetSurfaces.Values
                 .OrderBy(surface => surface.InstanceId, StringComparer.OrdinalIgnoreCase)
                 .ThenBy(surface => surface.InstanceId, StringComparer.Ordinal)
-                .Select(surface => surface.ToPlacement(surface.Card.Size.ToString())));
+                .Select(CreateWidgetPlacement));
+
+        private WidgetDesktopPlacement CreateWidgetPlacement(WidgetDesktopSurface surface) =>
+            surface.ToPlacement(
+                surface.Card.Size.ToString(),
+                Math.Max(1, DesktopItemsView.ActualWidth),
+                Math.Max(1, DesktopItemsView.ActualHeight));
 
         private void TrackWidgetOverlayLayout(TimeSpan duration)
         {
@@ -898,7 +937,7 @@ namespace XiyiDesktop
         private Windows.Foundation.Rect GetWidgetCollisionBounds(WidgetCardControl card, double x, double y)
         {
             var occupancy = GetWidgetOccupancyBounds(card, x, y);
-            var insets = DesktopItemsView.GetGridContentInsets();
+            var insets = GetWidgetVisualInsets();
             return new Windows.Foundation.Rect(
                 occupancy.X + insets.Left,
                 occupancy.Y + insets.Top,
@@ -906,11 +945,18 @@ namespace XiyiDesktop
                 Math.Max(1, occupancy.Height - insets.Top - insets.Bottom));
         }
 
+        private Thickness GetWidgetVisualInsets()
+        {
+            const double widgetEdgeInset = 10;
+            return new Thickness(widgetEdgeInset);
+        }
+
         private bool ResolveWidgetCollisions(
             WidgetCardControl? priorityCard = null,
             bool persistChanges = true,
             IReadOnlyDictionary<string, DesktopLayoutEngine.Point>? requestedPositions = null,
-            bool animateChanges = true)
+            bool animateChanges = true,
+            string? allowDesktopIconOverlapForInstanceId = null)
         {
             var surfaces = _widgetSurfaces.Values
                 .OrderBy(surface => surface.InstanceId, StringComparer.OrdinalIgnoreCase)
@@ -923,7 +969,7 @@ namespace XiyiDesktop
             var viewport = new DesktopLayoutEngine.Size(
                 Math.Max(1, DesktopItemsView.ActualWidth > 0 ? DesktopItemsView.ActualWidth : _desktopRoot.ActualWidth),
                 Math.Max(1, DesktopItemsView.ActualHeight > 0 ? DesktopItemsView.ActualHeight : _desktopRoot.ActualHeight));
-            var contentInsets = DesktopItemsView.GetGridContentInsets();
+            var contentInsets = GetWidgetVisualInsets();
             var requested = surfaces.Select(surface =>
             {
                 var x = Canvas.GetLeft(surface.LayoutElement);
@@ -942,12 +988,13 @@ namespace XiyiDesktop
                     new DesktopLayoutEngine.Point(x + contentInsets.Left, y + contentInsets.Top),
                     new DesktopLayoutEngine.Size(occupancy.Width, occupancy.Height));
             }).ToArray();
-            var resolved = DesktopLayoutEngine.ResolveCollisions(
+            var resolved = DesktopLayoutEngine.ResolveWidgetCollisions(
                 GetDesktopIconBounds(),
                 requested,
                 viewport,
                 new DesktopLayoutEngine.Size(cell.Width, cell.Height),
-                contentInsets.Left);
+                contentInsets.Left,
+                allowDesktopIconOverlapForInstanceId);
             var resolvedById = resolved.ToDictionary(item => item.Identity, StringComparer.OrdinalIgnoreCase);
             var moved = new List<WidgetDesktopSurface>();
             foreach (var surface in surfaces)
@@ -961,14 +1008,18 @@ namespace XiyiDesktop
                     continue;
                 var hostX = item.Position.X - contentInsets.Left;
                 var hostY = item.Position.Y - contentInsets.Top;
-                SetWidgetPosition(surface, hostX, hostY, animate: animateChanges);
+                SetWidgetPosition(
+                    surface,
+                    hostX,
+                    hostY,
+                    animate: animateChanges && !ReferenceEquals(surface.Card, priorityCard));
                 if (animateChanges)
                     UpdateWebWidgetOverlay(surface);
                 moved.Add(surface);
             }
 
             if (persistChanges && moved.Count > 0)
-                _widgetPlacementStore.UpsertRange(moved.Select(surface => surface.ToPlacement(surface.Card.Size.ToString())));
+                _widgetPlacementStore.UpsertRange(moved.Select(CreateWidgetPlacement));
             else if (!animateChanges && moved.Count > 0)
                 TrackWidgetOverlayLayout(TimeSpan.FromMilliseconds(48));
 
@@ -1036,8 +1087,6 @@ namespace XiyiDesktop
                             SetWidgetPosition(surface, x, y, animate: x != previousX || y != previousY);
                             UpdateWebWidgetOverlay(surface);
                             RefreshSharedDesktopLayout();
-                            if (x != previousX || y != previousY)
-                                SaveWidgetPlacements();
                         }
                     });
             };
@@ -1155,7 +1204,7 @@ namespace XiyiDesktop
                 scale = dpi > 0 ? dpi / 96d : 1d;
             }
 
-            return 8 * scale * widgetScale;
+            return AppSettingsStore.DesktopCornerRadius * scale * widgetScale;
         }
 
         private void CloseWebWidgetOverlay(string instanceId)
@@ -1221,7 +1270,10 @@ namespace XiyiDesktop
             _widgetDragSurface = card;
             _widgetDragPointerId = point.PointerId;
             _widgetDragStart = point.Position;
-            _widgetDragTransaction = new DesktopLayoutTransaction(GetWidgetPositionSnapshot());
+            _widgetDragOriginalPositions.Clear();
+            foreach (var (instanceId, position) in GetWidgetPositionSnapshot())
+                _widgetDragOriginalPositions[instanceId] = position;
+            _widgetDragTransaction = new DesktopLayoutTransaction(_widgetDragOriginalPositions);
             _widgetDragIconPositions.Clear();
             foreach (var item in Items.Where(item => item.HasPosition))
                 _widgetDragIconPositions[item] = new Windows.Foundation.Point(item.PositionX, item.PositionY);
@@ -1249,6 +1301,26 @@ namespace XiyiDesktop
             if (_widgetSurfaces.Values.FirstOrDefault(value => ReferenceEquals(value.Card, card)) is { } surface)
             {
                 SetWidgetPosition(surface, x, y, animate: false);
+                RefreshSharedDesktopLayout(isDragging: true);
+
+                // Reflow icons against the moving widget first, then resolve the
+                // widget preview from the original snapshot so each pointer update
+                // starts from the same stable layout.
+                DesktopItemsView.UpdateLayout();
+                var requestedPositions = new Dictionary<string, DesktopLayoutEngine.Point>(
+                    _widgetDragOriginalPositions,
+                    StringComparer.OrdinalIgnoreCase)
+                {
+                    [surface.InstanceId] = new DesktopLayoutEngine.Point(x, y)
+                };
+                ResolveWidgetCollisions(
+                    card,
+                    persistChanges: false,
+                    requestedPositions: requestedPositions,
+                    animateChanges: true,
+                    allowDesktopIconOverlapForInstanceId: surface.InstanceId);
+                _widgetDragTransaction?.UpdatePreview(GetWidgetPositionSnapshot());
+                DesktopItemsView.InvalidateArrange();
                 RefreshSharedDesktopLayout(isDragging: true);
                 TrackWidgetOverlayLayout(TimeSpan.FromMilliseconds(48));
             }
@@ -1280,8 +1352,18 @@ namespace XiyiDesktop
                 {
                     var x = Canvas.GetLeft(surface.LayoutElement);
                     var y = Canvas.GetTop(surface.LayoutElement);
-                    SnapWidgetPosition(card, ref x, ref y);
-                    ClampWidgetPosition(card, ref x, ref y);
+                    if (XiyiDesktop.AppSettingsStore.AlignIconsToGrid)
+                    {
+                        var aligned = DesktopItemsView.ClampPositionToGrid(
+                            new Windows.Foundation.Point(x, y),
+                            new Windows.Foundation.Size(surface.LayoutElement.Width, surface.LayoutElement.Height));
+                        x = aligned.X;
+                        y = aligned.Y;
+                    }
+                    else
+                    {
+                        ClampWidgetPosition(card, ref x, ref y);
+                    }
                     SetWidgetPosition(surface, x, y, animate: true);
                     ResolveWidgetCollisions(card, persistChanges: false);
                     _widgetDragTransaction?.UpdatePreview(GetWidgetPositionSnapshot());
@@ -1294,6 +1376,7 @@ namespace XiyiDesktop
             _widgetDragSurface = null;
             _widgetDragPointerId = 0;
             _widgetDragTransaction = null;
+            _widgetDragOriginalPositions.Clear();
             _widgetDragIconPositions.Clear();
             if (!canceled)
                 SaveManualDesktopOrder();
@@ -1363,8 +1446,9 @@ namespace XiyiDesktop
             public string? DefaultIconPath { get; set; }
             public Uri? WebUri { get; set; }
 
-            public WidgetDesktopPlacement ToPlacement(string size) =>
-                new(InstanceId, DefinitionId, DisplayName, size, X, Y, SupportedSizes, LightIconPath, DarkIconPath, DefaultIconPath, CoordinateSpaceVersion: 1);
+            public WidgetDesktopPlacement ToPlacement(string size, double viewportWidth, double viewportHeight) =>
+                new(InstanceId, DefinitionId, DisplayName, size, X, Y, SupportedSizes, LightIconPath, DarkIconPath,
+                    DefaultIconPath, CoordinateSpaceVersion: 1, ViewportWidth: viewportWidth, ViewportHeight: viewportHeight);
         }
 
         private void HostController_StateChanged(object? sender, DesktopHostStateChangedEventArgs e)
@@ -1494,8 +1578,12 @@ namespace XiyiDesktop
                 var viewModels = orderedItems.Select(item => new DesktopItemViewModel(item, _resources, GetDesktopIconSize())).ToArray();
                 foreach (var viewModel in viewModels)
                 {
-                    if (_layoutStore.TryGetPosition(viewModel.Item.Identity, out var x, out var y))
-                        viewModel.SetPosition(x, y);
+                    if (_layoutStore.TryGetPosition(viewModel.Item.Identity, out DesktopLayoutStore.DesktopItemPosition position))
+                    {
+                        viewModel.SetPosition(
+                            ScaleCoordinate(position.X, position.ViewportWidth, DesktopItemsView.ActualWidth),
+                            ScaleCoordinate(position.Y, position.ViewportHeight, DesktopItemsView.ActualHeight));
+                    }
                     viewModel.IsCut = viewModel.Item.Path is { } itemPath && _cutDesktopItemPaths.Contains(itemPath);
                 }
                 foreach (var item in viewModels)
@@ -1508,11 +1596,43 @@ namespace XiyiDesktop
                     ReorderDesktopItems(XiyiDesktop.AppSettingsStore.DesktopSortMode, persistLayout: false);
                 else
                 {
-                    DesktopItemsView.UpdateLayout();
-                    SaveManualDesktopOrder(updateLayout: false);
+                    var viewportWidth = Math.Max(1, DesktopItemsView.ActualWidth);
+                    var viewportHeight = Math.Max(1, DesktopItemsView.ActualHeight);
+                    var positionsWithoutViewport = viewModels
+                        .Where(item => item.HasPosition &&
+                            _layoutStore.TryGetPosition(item.Item.Identity, out DesktopLayoutStore.DesktopItemPosition saved) &&
+                            (saved.ViewportWidth <= 0 || saved.ViewportHeight <= 0))
+                        .Select(item => new DesktopLayoutStore.DesktopItemPosition(
+                            item.Item.Identity,
+                            item.PositionX,
+                            item.PositionY,
+                            viewportWidth,
+                            viewportHeight))
+                        .ToArray();
+                    if (positionsWithoutViewport.Length > 0)
+                        _layoutStore.SaveLayout(viewModels.Select(item => item.Item.Identity), positionsWithoutViewport);
+                    else
+                        _layoutStore.SaveOrder(viewModels.Select(item => item.Item.Identity));
                 }
 
-                ApplyDesktopWidgetScale();
+                DesktopItemsView.UpdateLayout();
+                if (!XiyiDesktop.AppSettingsStore.DesktopAutoArrange)
+                {
+                    var untrackedPositions = viewModels
+                        .Where(item => item.HasPosition &&
+                            !_layoutStore.TryGetPosition(item.Item.Identity, out DesktopLayoutStore.DesktopItemPosition _))
+                        .Select(item => new DesktopLayoutStore.DesktopItemPosition(
+                            item.Item.Identity,
+                            item.PositionX,
+                            item.PositionY,
+                            Math.Max(1, DesktopItemsView.ActualWidth),
+                            Math.Max(1, DesktopItemsView.ActualHeight)))
+                        .ToArray();
+                    if (untrackedPositions.Length > 0)
+                        _layoutStore.SaveLayout(viewModels.Select(item => item.Item.Identity), untrackedPositions);
+                }
+                ApplyDesktopWidgetScale(persistPositions: false);
+                _initialDesktopItemsLayoutReady.TrySetResult(true);
 
                 await LoadDesktopItemIconsAsync(viewModels, GetDesktopIconPixelSize(), token);
                 App.WidgetPicker?.RefreshPlacementCheck();
@@ -1525,6 +1645,11 @@ namespace XiyiDesktop
                 System.Diagnostics.Debug.WriteLine($"Could not enumerate desktop items: {exception}");
                 if (showErrorDialog)
                     await ShowOperationErrorAsync();
+            }
+            finally
+            {
+                if (!_disposed && generation == Volatile.Read(ref _refreshGeneration))
+                    _initialDesktopItemsLayoutReady.TrySetResult(true);
             }
         }
 
@@ -1571,17 +1696,52 @@ namespace XiyiDesktop
         private void DesktopItemsView_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             DesktopItemsView.SetViewportSize(e.NewSize);
-            ApplyDesktopWidgetScale();
-            if (XiyiDesktop.AppSettingsStore.DesktopAutoArrange || XiyiDesktop.AppSettingsStore.AlignIconsToGrid)
-                return;
-
-            foreach (var item in Items)
+            if (!XiyiDesktop.AppSettingsStore.DesktopAutoArrange)
             {
-                if (item.HasPosition)
-                    DesktopItemsView.ClampItemPosition(item);
+                foreach (var item in Items)
+                {
+                    if (_layoutStore.TryGetPosition(item.Item.Identity, out DesktopLayoutStore.DesktopItemPosition position))
+                    {
+                        item.SetPosition(
+                            ScaleCoordinate(position.X, position.ViewportWidth, e.NewSize.Width),
+                            ScaleCoordinate(position.Y, position.ViewportHeight, e.NewSize.Height));
+                    }
+                    if (!XiyiDesktop.AppSettingsStore.AlignIconsToGrid && item.HasPosition)
+                        DesktopItemsView.ClampItemPosition(item);
+                }
             }
 
-            SaveManualDesktopOrder(updateLayout: false);
+            var savedWidgetPositions = _widgetPlacementStore.GetAll()
+                .ToDictionary(placement => placement.InstanceId, StringComparer.OrdinalIgnoreCase);
+            foreach (var surface in _widgetSurfaces.Values)
+            {
+                if (savedWidgetPositions.TryGetValue(surface.InstanceId, out var placement))
+                {
+                    var viewportWidth = Math.Max(1, e.NewSize.Width);
+                    var viewportHeight = Math.Max(1, e.NewSize.Height);
+                    var x = ScaleCoordinate(placement.X, placement.ViewportWidth, viewportWidth);
+                    var y = ScaleCoordinate(placement.Y, placement.ViewportHeight, viewportHeight);
+                    if (placement.CoordinateSpaceVersion < 1)
+                    {
+                        x -= DesktopSurface.Margin.Left;
+                        y -= DesktopSurface.Margin.Top;
+                        placement = placement with
+                        {
+                            X = x,
+                            Y = y,
+                            CoordinateSpaceVersion = 1,
+                            ViewportWidth = viewportWidth,
+                            ViewportHeight = viewportHeight
+                        };
+                        _widgetPlacementStore.Upsert(placement);
+                    }
+                    SetWidgetPosition(surface, x, y, animate: false);
+                }
+            }
+
+            // Resizing the desktop surface is only a presentation adjustment. Keep
+            // stored positions intact so returning to the previous viewport restores them.
+            ApplyDesktopWidgetScale(persistPositions: false);
         }
 
         private void DesktopRoot_PointerWheelChanged(object sender, PointerRoutedEventArgs e)
@@ -1595,7 +1755,7 @@ namespace XiyiDesktop
 
             var currentSize = GetDesktopIconSize();
             var nextSize = Math.Clamp(
-                currentSize + wheelDelta / 120.0 * 4,
+                currentSize + wheelDelta / 120.0 * DesktopIconMetrics.WheelStep,
                 MinimumDesktopIconSize,
                 MaximumDesktopIconSize);
             if (Math.Abs(nextSize - currentSize) < 0.01)
@@ -1617,9 +1777,9 @@ namespace XiyiDesktop
         private static double GetDesktopIconSize() => XiyiDesktop.AppSettingsStore.DesktopIconCustomSize ??
             (XiyiDesktop.AppSettingsStore.DesktopIconSize switch
             {
-                "Small" => 40,
-                "Large" => 72,
-                _ => 56
+                "Small" => DesktopIconMetrics.Small,
+                "Large" => DesktopIconMetrics.Large,
+                _ => DesktopIconMetrics.Medium
             });
 
         private void ScheduleDesktopIconImageRefresh()
@@ -2989,7 +3149,6 @@ namespace XiyiDesktop
                     if (item.HasPosition)
                         DesktopItemsView.ClampItemPosition(item);
                 }
-                SaveManualDesktopOrder(updateLayout: false);
             }
         }
 
@@ -3939,18 +4098,6 @@ namespace XiyiDesktop
                 SaveManualDesktopOrder(updateLayout: false);
             }
 
-            if (enabled)
-            {
-                foreach (var surface in _widgetSurfaces.Values)
-                {
-                    var x = Canvas.GetLeft(surface.LayoutElement);
-                    var y = Canvas.GetTop(surface.LayoutElement);
-                    SnapWidgetPosition(surface.Card, ref x, ref y);
-                    ClampWidgetPosition(surface.Card, ref x, ref y);
-                    SetWidgetPosition(surface, x, y, animate: true);
-                    UpdateWebWidgetOverlay(surface);
-                }
-            }
             ResolveWidgetCollisions(persistChanges: false);
             SaveWidgetPlacements();
             RefreshSharedDesktopLayout();
@@ -4120,7 +4267,12 @@ namespace XiyiDesktop
                 _layoutStore.SaveLayout(
                     Items.Select(item => item.Item.Identity),
                     Items.Where(item => item.HasPosition).Select(item =>
-                        new DesktopLayoutStore.DesktopItemPosition(item.Item.Identity, item.PositionX, item.PositionY)));
+                        new DesktopLayoutStore.DesktopItemPosition(
+                            item.Item.Identity,
+                            item.PositionX,
+                            item.PositionY,
+                            Math.Max(1, DesktopItemsView.ActualWidth),
+                            Math.Max(1, DesktopItemsView.ActualHeight))));
             }
         }
 
@@ -5514,10 +5666,13 @@ namespace XiyiDesktop
             UpdateViewMenuItems();
         }
 
-        private void DesktopWindow_Closed(object sender, WindowEventArgs args)
+        public void Dispose()
         {
-            SaveManualDesktopOrder();
+            if (_disposed)
+                return;
+
             _disposed = true;
+            _initialDesktopItemsLayoutReady.TrySetResult(true);
             foreach (var instanceId in _webWidgetOverlays.Keys.ToArray())
                 CloseWebWidgetOverlay(instanceId);
             foreach (var surface in _widgetSurfaces.Values)
@@ -5536,13 +5691,16 @@ namespace XiyiDesktop
             Clipboard.ContentChanged -= Clipboard_ContentChanged;
             try
             {
-                this.As<Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop>().SystemBackdrop = null;
-                _transparentBackdropBrush?.Dispose();
-                _transparentBackdropBrush = null;
+                if (_desktopXamlSource is not null)
+                {
+                    _desktopXamlSource.Content = null;
+                    _desktopXamlSource.Dispose();
+                    _desktopXamlSource = null;
+                }
             }
-            catch (Exception exception) when (exception is COMException || exception is ObjectDisposedException)
+            catch (Exception exception) when (exception is COMException or InvalidOperationException)
             {
-                Debug.WriteLine($"Could not release the transparent composition backdrop: {exception.Message}");
+                Debug.WriteLine($"Could not close the desktop XAML Island: {exception.Message}");
             }
             _itemsService.ItemsChanged -= ItemsService_ItemsChanged;
             if (_taskbarBoundsChangeHook != IntPtr.Zero)
@@ -5575,7 +5733,10 @@ namespace XiyiDesktop
                 _hostController.StateChanged -= HostController_StateChanged;
                 _hostController.WindowHandleLost -= HostController_WindowHandleLost;
                 _hostController.Dispose();
+                _hostController = null;
             }
+
+            DesktopCarrierWindow.Destroy(_windowHandle);
         }
     }
 
@@ -5595,6 +5756,7 @@ namespace XiyiDesktop
         }
 
         private double _iconSize;
+        private double _cornerRadius = AppSettingsStore.DesktopCornerRadius;
         private double _positionX = double.NaN;
         private double _positionY = double.NaN;
         private bool _isSelected;
@@ -5614,7 +5776,9 @@ namespace XiyiDesktop
 
         public double IconSize => _iconSize;
 
-        public double ScaleFactor => _iconSize / 56;
+        public CornerRadius ItemCornerRadius => new(_cornerRadius);
+
+        public double ScaleFactor => _iconSize / DesktopIconMetrics.Medium;
 
         public double TileWidth => Math.Max(_iconSize, TextWidth) + TilePadding.Left + TilePadding.Right;
 
@@ -5622,7 +5786,7 @@ namespace XiyiDesktop
 
         public double GlyphSize => _iconSize * 0.75;
 
-        public double TextWidth => Math.Max(72, (56 + 40) * ScaleFactor);
+        public double TextWidth => Math.Max(72, (DesktopIconMetrics.Medium + 40) * ScaleFactor);
 
         public double TextMaxHeight => Math.Max(32, 40 * ScaleFactor);
 
@@ -5630,7 +5794,7 @@ namespace XiyiDesktop
 
         public double PanelSpacing => Math.Max(4, 5 * ScaleFactor);
 
-        public Thickness TilePadding => new(Math.Max(4, 8 * ScaleFactor));
+        public Thickness TilePadding => new(Math.Max(2, 4 * ScaleFactor));
 
         public BitmapImage? ShortcutArrowIcon => ShortcutArrowImage.Value;
 
@@ -5719,6 +5883,16 @@ namespace XiyiDesktop
         }
 
         public double MarqueeHoverOpacity => IsMarqueeHovered ? 0.18 : 0;
+
+        internal void SetCornerRadius(double cornerRadius)
+        {
+            cornerRadius = double.IsFinite(cornerRadius) ? Math.Clamp(cornerRadius, 0, 32) : 8;
+            if (Math.Abs(_cornerRadius - cornerRadius) < 0.01)
+                return;
+
+            _cornerRadius = cornerRadius;
+            OnPropertyChanged(nameof(ItemCornerRadius));
+        }
 
         internal void SetShortcutArrowVisibility(bool isVisible)
         {

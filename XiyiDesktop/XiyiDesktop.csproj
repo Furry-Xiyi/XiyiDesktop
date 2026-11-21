@@ -4,7 +4,6 @@
 		<TargetFramework>net10.0-windows10.0.26100.0</TargetFramework>
 		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
 		<RootNamespace>XiyiDesktop</RootNamespace>
-		<ApplicationManifest>app.manifest</ApplicationManifest>
 		<Platforms>x64;ARM64</Platforms>
 		<RuntimeIdentifiers>win-x64;win-arm64</RuntimeIdentifiers>
 		<RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">win-$(Platform.ToLower())</RuntimeIdentifier>
@@ -15,6 +14,8 @@
 		<Nullable>enable</Nullable>
 		<DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN</DefineConstants>
 		<PublishAot>true</PublishAot>
+		<BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+		<EnableGeneratedComInterfaceComImportInterop>true</EnableGeneratedComInterfaceComImportInterop>
 		<SelfContained>false</SelfContained>
 	</PropertyGroup>
 
@@ -30,7 +31,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Manifest Include="$(ApplicationManifest)" />
+		<Manifest Include="app.manifest" />
 	</ItemGroup>
 
 	<!--
@@ -43,7 +44,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.3.260402-preview2" />
-		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.29648.1000-preview" />
+		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.29648.1000-preview" GeneratePathProperty="true" />
 		<PackageReference Include="CommunityToolkit.Labs.WinUI.Controls.TitleBar" Version="0.1.251217-build.2433" />
 		<PackageReference Include="Microsoft.WindowsAppSDK" Version="2.6.5" />
 		<PackageReference Include="Microsoft.Windows.CsWinRT" Version="2.3.1" />
@@ -58,6 +59,7 @@
 		<Content Include="Assets\Icon\windows.widget.png" CopyToOutputDirectory="PreserveNewest" />
 		<Content Include="Assets\DesktopSettings\**\*" CopyToOutputDirectory="PreserveNewest" />
 		<Content Include="Assets\AddWidget\**\*" CopyToOutputDirectory="PreserveNewest" />
+		<Content Include="Assets\SMTCWidget\**\*" CopyToOutputDirectory="PreserveNewest" />
 		<Content Include="Assets\ShortcutArrow.png" CopyToOutputDirectory="PreserveNewest" />
 		<Content Include="Widgets\HostConfig*.json" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
@@ -74,6 +76,48 @@
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Update="Assets\DesktopSettings\AppIcon.ico">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Update="Assets\SMTCWidget\Dark\FastForward.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Update="Assets\SMTCWidget\Dark\Next.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Update="Assets\SMTCWidget\Dark\Pause.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Update="Assets\SMTCWidget\Dark\Play.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Update="Assets\SMTCWidget\Dark\Previous.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Update="Assets\SMTCWidget\Dark\Rewind.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Update="Assets\SMTCWidget\Light\FastForward.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Update="Assets\SMTCWidget\Light\Next.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Update="Assets\SMTCWidget\Light\Pause.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Update="Assets\SMTCWidget\Light\Play.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Update="Assets\SMTCWidget\Light\Previous.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Update="Assets\SMTCWidget\Light\Rewind.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Update="Assets\SMTCWidget\SMTCWidget-Screenshot.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Update="Assets\SMTCWidget\SMTCWidget.png">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Update="Assets\SplashScreen.scale-100.png">
@@ -113,6 +157,7 @@
 		<AppxBundle>Never</AppxBundle>
 		<HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
 		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+		<LangVersion>preview</LangVersion>
 	</PropertyGroup>
 	<ItemGroup>
 	  <Compile Remove="C:\Users\Furry_Xiyi\.nuget\packages\microsoft.windowsappsdk.runtime\2.6.5\buildTransitive\..\include\WindowsAppSDK-VersionInfo.cs" />
@@ -120,10 +165,9 @@
 	<ItemGroup>
 	  <Content Remove="Assets\Icon\AppIcon.ico" />
 	</ItemGroup>
-	<!-- The experimental Host projection uses a distinct file name, while the
-	     MSIX metadata harvester requires the WinMD file name to match its module
-	     name. Stage the host metadata under the expected public Widgets name and
-	     remove the source-named payload before packaging. -->
+	<ItemGroup>
+	  <Folder Include="Assets\SMTCWidget\" />
+	</ItemGroup>
 	<Target Name="StageWidgetsHostWinMDForPackaging" BeforeTargets="PrepareForBuild">
 		<ItemGroup>
 			<_WidgetsHostWinMD Include="@(Content)" Condition="'%(Content.DefiningProjectName)' == 'Xiyi.WindowsAppSDK.Widgets.HostProjection' and '%(Content.Filename)' == 'Microsoft.Windows.Widgets.Hosts'" />
@@ -133,5 +177,17 @@
 			<Content Remove="@(_WidgetsHostWinMD)" />
 			<Content Include="$(IntermediateOutputPath)Microsoft.Windows.Widgets.winmd" Link="Microsoft.Windows.Widgets.winmd" CopyToOutputDirectory="PreserveNewest" />
 		</ItemGroup>
+	</Target>
+	<Target Name="CompilePowerSoundWin32Resources" BeforeTargets="CoreCompile">
+		<PropertyGroup>
+			<_PowerSoundResourceCompiler>$(PkgMicrosoft_Windows_SDK_BuildTools)\bin\10.0.29648.0\x64\rc.exe</_PowerSoundResourceCompiler>
+			<_PowerSoundResourceFile>$(IntermediateOutputPath)PowerSoundEvents.res</_PowerSoundResourceFile>
+		</PropertyGroup>
+		<Error Condition="!Exists('$(_PowerSoundResourceCompiler)')" Text="The Windows SDK resource compiler was not found at $(_PowerSoundResourceCompiler)." />
+		<MakeDir Directories="$(IntermediateOutputPath)" />
+		<Exec Command="&quot;$(_PowerSoundResourceCompiler)&quot; /nologo /I &quot;$(MSBuildProjectDirectory)&quot; /fo &quot;$(_PowerSoundResourceFile)&quot; &quot;$(MSBuildProjectDirectory)\Power\PowerSoundEvents.rc&quot;" />
+		<PropertyGroup>
+			<Win32Resource>$(_PowerSoundResourceFile)</Win32Resource>
+		</PropertyGroup>
 	</Target>
 </Project>

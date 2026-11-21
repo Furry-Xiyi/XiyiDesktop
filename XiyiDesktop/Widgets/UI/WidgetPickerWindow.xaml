@@ -2,7 +2,8 @@
     x:Class="XiyiDesktop.Widgets.UI.WidgetPickerWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:muxc="using:CommunityToolkit.WinUI.Controls">
+    xmlns:muxc="using:CommunityToolkit.WinUI.Controls"
+    xmlns:widgets="using:XiyiDesktop.Widgets.UI">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -24,8 +25,6 @@
                         IsSettingsVisible="False"
                         IsBackButtonVisible="Collapsed"
                         IsPaneToggleButtonVisible="False"
-                        IsPaneOpen="True"
-                        OpenPaneLength="300"
                         SelectionChanged="WidgetNavigation_SelectionChanged">
             <NavigationView.PaneHeader>
                 <TextBlock x:Uid="WidgetPickerListHeading" Margin="16,8,8,8" FontSize="18" FontWeight="SemiBold"/>
@@ -33,50 +32,78 @@
             <NavigationView.MenuItems>
                 <NavigationViewItem x:Uid="WidgetPickerLoading" Tag="loading" IsEnabled="False"/>
             </NavigationView.MenuItems>
-            <Grid Margin="24" RowSpacing="14">
+            <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="12">
-                    <Image x:Name="WidgetIconImage" Width="48" Height="48" Stretch="Uniform" VerticalAlignment="Center"/>
-                    <StackPanel VerticalAlignment="Center" Spacing="3">
-                        <TextBlock x:Name="WidgetNameText" FontSize="22" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                <Grid Grid.Row="0">
+                    <FlipView x:Name="WidgetFlipView" Padding="0" Background="Transparent"
+                              Visibility="Collapsed" IsHitTestVisible="True"
+                              HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
+                              SelectionChanged="WidgetFlipView_SelectionChanged">
+                        <FlipView.ItemTemplate>
+                            <DataTemplate>
+                                <widgets:WidgetPickerPageControl EntryObject="{Binding}" />
+                            </DataTemplate>
+                        </FlipView.ItemTemplate>
+                    </FlipView>
+                    <Border x:Name="SinglePreviewCard" MaxWidth="300" MaxHeight="462"
+                            HorizontalAlignment="Center" VerticalAlignment="Center"
+                            Translation="0,0,32"
+                            CornerRadius="{ThemeResource OverlayCornerRadius}"
+                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1"
+                            Visibility="Collapsed">
+                        <Border.Shadow>
+                            <ThemeShadow />
+                        </Border.Shadow>
+                        <Grid>
+                            <Image x:Name="SinglePreviewImage" Stretch="Uniform"
+                                   MaxWidth="300" MaxHeight="462"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="SinglePreviewFallback" x:Uid="WidgetPickerPreviewUnavailable"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                                       TextWrapping="Wrap" TextAlignment="Center" MaxWidth="300"
+                                       Opacity="0.65" Visibility="Collapsed"/>
+                        </Grid>
+                    </Border>
+
+                    <StackPanel x:Name="WidgetHeaderOverlay" Grid.Row="0" Orientation="Horizontal" Spacing="12" Margin="10"
+                                HorizontalAlignment="Left" VerticalAlignment="Top" IsHitTestVisible="False">
+                        <Image x:Name="WidgetIconImage" Width="48" Height="48" Stretch="Uniform"
+                               VerticalAlignment="Center"/>
+                        <TextBlock x:Name="WidgetNameText" FontSize="22" FontWeight="SemiBold"
+                                   TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
                     </StackPanel>
-                </StackPanel>
-
-                <Border Grid.Row="1" MinHeight="220" Padding="12" CornerRadius="10"
-                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
-                    <Grid>
-                        <Image x:Name="WidgetPreviewImage" Stretch="Uniform"/>
-                        <TextBlock x:Name="WidgetPreviewFallbackText" x:Uid="WidgetPickerPreviewUnavailable"
-                                   HorizontalAlignment="Center" VerticalAlignment="Center"
-                                   TextWrapping="Wrap" TextAlignment="Center" MaxWidth="380" Opacity="0.65"/>
+                    <Grid x:Name="WidgetActionOverlay" Grid.Row="0" Margin="10" ColumnSpacing="8" VerticalAlignment="Bottom"
+                          IsHitTestVisible="True">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel x:Name="SizeSelectorPanel" Grid.Column="0" Orientation="Horizontal"
+                                        Spacing="8" VerticalAlignment="Center" IsHitTestVisible="True">
+                                <TextBlock x:Uid="WidgetPickerSizeLabel" VerticalAlignment="Center"/>
+                                <ComboBox x:Name="SizeComboBox" Width="120" VerticalAlignment="Center"
+                                          SelectionChanged="SizeComboBox_SelectionChanged"/>
+                            </StackPanel>
+                            <Button x:Name="AddButton" Grid.Column="1" HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Center" Style="{StaticResource AccentButtonStyle}"
+                                    Click="AddButton_Click" IsEnabled="False" IsHitTestVisible="True">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="8">
+                                    <FontIcon Glyph="&#xE718;" FontFamily="{ThemeResource SymbolThemeFontFamily}"/>
+                                    <TextBlock x:Name="AddButtonText" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
                     </Grid>
-                </Border>
-
-                <StackPanel Grid.Row="2" Spacing="8">
-                    <Grid ColumnSpacing="8">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <Button x:Name="SizeButton" x:Uid="WidgetPickerSizeButton"
-                                Grid.Column="0" Click="SizeButton_Click"/>
-                        <Button x:Name="AddButton" x:Uid="WidgetPickerAddButton"
-                                Grid.Column="1" HorizontalAlignment="Stretch"
-                                Style="{StaticResource AccentButtonStyle}"
-                                Click="AddButton_Click" IsEnabled="False"/>
-                    </Grid>
-                    <TextBlock x:Name="DesktopFullHint" x:Uid="WidgetPickerDesktopFullHint"
-                               TextWrapping="Wrap" Foreground="{ThemeResource SystemFillColorCautionBrush}"
-                               Visibility="Collapsed"/>
-                    <TextBlock x:Name="CatalogStatusText" x:Uid="WidgetPickerLoadingStatus"
-                               TextWrapping="Wrap" Opacity="0.72"/>
-                </StackPanel>
+                </Grid>
+                <PipsPager x:Name="WidgetPagePager" Grid.Row="1" Orientation="Horizontal"
+                           HorizontalAlignment="Center" VerticalAlignment="Bottom" NumberOfPages="1"
+                           PreviousButtonVisibility="VisibleOnPointerOver" NextButtonVisibility="VisibleOnPointerOver"
+                           SelectedIndexChanged="WidgetPagePager_SelectedIndexChanged"
+                           Visibility="Collapsed"/>
             </Grid>
         </NavigationView>
     </Grid>

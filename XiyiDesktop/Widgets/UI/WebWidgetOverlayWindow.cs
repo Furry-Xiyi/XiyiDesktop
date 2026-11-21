@@ -33,6 +33,7 @@ internal sealed class WebWidgetOverlayWindow : IDisposable
     private int _lastRoundedHeight;
     private int _lastCornerDiameter;
     private double _lastCornerRadiusPixels;
+    private bool _hasCornerRadius;
 
     public event EventHandler<Exception>? InitializationFailed;
     public event EventHandler<CoreWebView2NavigationCompletedEventArgs>? NavigationCompleted;
@@ -91,6 +92,8 @@ internal sealed class WebWidgetOverlayWindow : IDisposable
 
         var width = Math.Max(1, checked((int)Math.Round(screenBounds.Width)));
         var height = Math.Max(1, checked((int)Math.Round(screenBounds.Height)));
+        _lastCornerRadiusPixels = cornerRadiusPixels;
+        _hasCornerRadius = true;
         if (!SetWindowPos(HostHwnd, _siblingAboveHwnd, origin.X, origin.Y, width, height,
             SwpNoActivate | SwpShowWindow))
             throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error());
@@ -157,7 +160,7 @@ internal sealed class WebWidgetOverlayWindow : IDisposable
             controller.Bounds = new Rect(0, 0, width, height);
             var dpi = GetDpiForWindow(HostHwnd);
             var scale = dpi > 0 ? dpi / 96d : 1d;
-            ApplyRoundedWindowRegions(width, height, _lastCornerRadiusPixels > 0
+            ApplyRoundedWindowRegions(width, height, _hasCornerRadius
                 ? _lastCornerRadiusPixels
                 : 8 * scale);
             core.Navigate(_uri.AbsoluteUri);
@@ -174,7 +177,7 @@ internal sealed class WebWidgetOverlayWindow : IDisposable
 
     private void Core_NavigationCompleted(CoreWebView2 sender, CoreWebView2NavigationCompletedEventArgs args)
     {
-        if (_lastRoundedWidth > 0 && _lastRoundedHeight > 0 && _lastCornerRadiusPixels > 0)
+        if (_lastRoundedWidth > 0 && _lastRoundedHeight > 0 && _hasCornerRadius)
             ApplyRoundedWindowRegions(_lastRoundedWidth, _lastRoundedHeight, _lastCornerRadiusPixels, force: true);
         NavigationCompleted?.Invoke(this, args);
     }
@@ -206,6 +209,33 @@ internal sealed class WebWidgetOverlayWindow : IDisposable
     private void ApplyRoundedWindowRegions(int width, int height, double cornerRadiusPixels, bool force = false)
     {
         _lastCornerRadiusPixels = cornerRadiusPixels;
+        _hasCornerRadius = true;
+        if (cornerRadiusPixels <= 0)
+        {
+            if (!force && _lastRoundedWidth == width && _lastRoundedHeight == height && _lastCornerDiameter == 0)
+                return;
+
+            SetWindowRgn(HostHwnd, IntPtr.Zero, redraw: true);
+            for (var child = GetWindow(HostHwnd, GwChild); child != IntPtr.Zero; child = GetWindow(child, GwHwndNext))
+            {
+                var style = GetWindowLongPtr(child, GwlStyle).ToInt64();
+                if ((style & WsVisibleFlag) == 0 || !GetClientRect(child, out var childClient))
+                    continue;
+
+                var childWidth = childClient.Right - childClient.Left;
+                var childHeight = childClient.Bottom - childClient.Top;
+                if (childWidth < width * 0.9 || childHeight < height * 0.9)
+                    continue;
+
+                SetWindowRgn(child, IntPtr.Zero, redraw: true);
+            }
+
+            _lastRoundedWidth = width;
+            _lastRoundedHeight = height;
+            _lastCornerDiameter = 0;
+            return;
+        }
+
         var diameter = Math.Clamp(
             checked((int)Math.Round(Math.Max(1, cornerRadiusPixels) * 2)),
             2,

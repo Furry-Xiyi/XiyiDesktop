@@ -10,6 +10,20 @@
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
             </ResourceDictionary.MergedDictionaries>
             <StaticResource x:Key="CommandBarFlyoutBackground" ResourceKey="LayerOnAcrylicFillColorDefaultBrush" />
+            <Style x:Key="SmtcCircularWidgetActionButtonStyle"
+                   TargetType="Button"
+                   BasedOn="{StaticResource DefaultButtonStyle}">
+                <Setter Property="Width" Value="32" />
+                <Setter Property="Height" Value="32" />
+                <Setter Property="MinWidth" Value="32" />
+                <Setter Property="MinHeight" Value="32" />
+                <Setter Property="MaxWidth" Value="32" />
+                <Setter Property="MaxHeight" Value="32" />
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="CornerRadius" Value="16" />
+            </Style>
             <Style x:Key="AcrylicMenuFlyoutPresenterBaseStyle" TargetType="muxc:MenuFlyoutPresenter">
                 <Setter Property="Background" Value="{ThemeResource LayerOnAcrylicFillColorDefaultBrush}" />
             </Style>

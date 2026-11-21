@@ -2,25 +2,100 @@
     x:Class="XiyiDesktop.Pages.AppearancePage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:muxc="using:CommunityToolkit.WinUI.Controls">
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls">
 
     <ScrollViewer Padding="20,20,20,0" HorizontalContentAlignment="Stretch">
         <StackPanel Spacing="20" HorizontalAlignment="Stretch">
             <TextBlock x:Uid="AppearancePageTitle"
                        FontSize="28"
                        FontWeight="SemiBold"/>
-            <TextBlock x:Uid="AppearancePageDescription"
-                       TextWrapping="Wrap"
-                       Opacity="0.78"/>
 
-            <muxc:SettingsCard x:Uid="ThemeSettingsCard"
+            <controls:SettingsExpander x:Uid="PowerSoundsExpander"
+                                   IsExpanded="True"
+                                   HorizontalAlignment="Stretch">
+                <controls:SettingsExpander.HeaderIcon>
+                    <FontIcon Glyph="&#xEBB5;"/>
+                </controls:SettingsExpander.HeaderIcon>
+                <controls:SettingsExpander.Content>
+                    <ToggleSwitch x:Name="PowerSoundsToggle"
+                                  IsOn="True"
+                                  Toggled="PowerSoundsToggle_Toggled"/>
+                </controls:SettingsExpander.Content>
+                <controls:SettingsExpander.Items>
+                    <controls:SettingsCard HorizontalAlignment="Stretch"
+                                           MinHeight="30"
+                                           ContentAlignment="Left"
+                                           Padding="16,0">
+                        <CheckBox x:Uid="PowerSoundsCustomCheckBox"
+                                  x:Name="UseCustomPowerSoundsCheckBox"
+                                  Checked="UseCustomPowerSoundsCheckBox_Changed"
+                                  Unchecked="UseCustomPowerSoundsCheckBox_Changed"/>
+                    </controls:SettingsCard>
+
+                    <controls:SettingsCard x:Uid="PowerConnectedSoundCard"
+                                           x:Name="PowerConnectedSoundCard"
+                                           HorizontalAlignment="Stretch"
+                                           HorizontalContentAlignment="Stretch"
+                                           MinHeight="50"
+                                           Padding="16,0">
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Spacing="8">
+                            <Button x:Name="PowerConnectedSoundResetButton"
+                                    Width="32"
+                                    Height="32"
+                                    Padding="0"
+                                    Visibility="Collapsed"
+                                    Click="PowerConnectedSoundResetButton_Click">
+                                <FontIcon Glyph="&#xE72C;"/>
+                            </Button>
+                            <Button x:Uid="PowerConnectedSoundChooseButton"
+                                    x:Name="PowerConnectedSoundChooseButton"
+                                    Click="PowerConnectedSoundChooseButton_Click"/>
+                            <ToggleSwitch x:Name="PowerConnectedSoundToggle"
+                                          IsOn="True"
+                                          Toggled="PowerConnectedSoundToggle_Toggled"/>
+                        </StackPanel>
+                    </controls:SettingsCard>
+
+                    <controls:SettingsCard x:Uid="PowerDisconnectedSoundCard"
+                                           x:Name="PowerDisconnectedSoundCard"
+                                           HorizontalAlignment="Stretch"
+                                           HorizontalContentAlignment="Stretch"
+                                           MinHeight="50"
+                                           Padding="16,0">
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Spacing="8">
+                            <Button x:Name="PowerDisconnectedSoundResetButton"
+                                    Width="32"
+                                    Height="32"
+                                    Padding="0"
+                                    Visibility="Collapsed"
+                                    Click="PowerDisconnectedSoundResetButton_Click">
+                                <FontIcon Glyph="&#xE72C;"/>
+                            </Button>
+                            <Button x:Uid="PowerDisconnectedSoundChooseButton"
+                                    x:Name="PowerDisconnectedSoundChooseButton"
+                                    Click="PowerDisconnectedSoundChooseButton_Click"/>
+                            <ToggleSwitch x:Name="PowerDisconnectedSoundToggle"
+                                          IsOn="True"
+                                          Toggled="PowerDisconnectedSoundToggle_Toggled"/>
+                        </StackPanel>
+                    </controls:SettingsCard>
+                </controls:SettingsExpander.Items>
+            </controls:SettingsExpander>
+
+            <controls:SettingsCard x:Uid="ThemeSettingsCard"
                                    HorizontalAlignment="Stretch"
                                    HorizontalContentAlignment="Stretch"
                                    Visibility="Collapsed"
                                    MinHeight="70" Padding="16,0">
-                <muxc:SettingsCard.HeaderIcon>
+                <controls:SettingsCard.HeaderIcon>
                     <FontIcon Glyph="&#xE706;"/>
-                </muxc:SettingsCard.HeaderIcon>
+                </controls:SettingsCard.HeaderIcon>
                 <RadioButtons x:Name="ThemeOptions"
                               HorizontalAlignment="Right"
                               SelectionChanged="ThemeOptions_SelectionChanged">
@@ -28,16 +103,16 @@
                     <RadioButton x:Uid="ThemeLight" Tag="Light"/>
                     <RadioButton x:Uid="ThemeDark" Tag="Dark"/>
                 </RadioButtons>
-            </muxc:SettingsCard>
+            </controls:SettingsCard>
 
-            <muxc:SettingsCard x:Uid="MaterialSettingsCard"
+            <controls:SettingsCard x:Uid="MaterialSettingsCard"
                                    HorizontalAlignment="Stretch"
                                    HorizontalContentAlignment="Stretch"
                                    Visibility="Collapsed"
                                    MinHeight="70" Padding="16,0">
-                <muxc:SettingsCard.HeaderIcon>
+                <controls:SettingsCard.HeaderIcon>
                     <FontIcon Glyph="&#xE2B1;"/>
-                </muxc:SettingsCard.HeaderIcon>
+                </controls:SettingsCard.HeaderIcon>
                 <RadioButtons x:Name="MaterialOptions"
                               HorizontalAlignment="Right"
                               SelectionChanged="MaterialOptions_SelectionChanged">
@@ -45,19 +120,44 @@
                     <RadioButton x:Uid="MaterialMicaAlt" Tag="MicaAlt"/>
                     <RadioButton x:Uid="MaterialAcrylic" Tag="Acrylic"/>
                 </RadioButtons>
-            </muxc:SettingsCard>
+            </controls:SettingsCard>
 
-            <muxc:SettingsCard x:Uid="ShortcutArrowSettingsCard"
+            <controls:SettingsCard x:Uid="ShortcutArrowSettingsCard"
                                    HorizontalAlignment="Stretch"
                                    HorizontalContentAlignment="Stretch"
                                    MinHeight="70" Padding="16,0">
-                <muxc:SettingsCard.HeaderIcon>
+                <controls:SettingsCard.HeaderIcon>
                     <ImageIcon x:Name="ShortcutArrowIcon"/>
-                </muxc:SettingsCard.HeaderIcon>
+                </controls:SettingsCard.HeaderIcon>
                 <ToggleSwitch x:Name="ShortcutArrowToggle"
                               HorizontalAlignment="Right"
                               Toggled="ShortcutArrowToggle_Toggled"/>
-            </muxc:SettingsCard>
+            </controls:SettingsCard>
+
+            <controls:SettingsCard x:Uid="CornerRadiusSettingsCard"
+                               HorizontalAlignment="Stretch"
+                               HorizontalContentAlignment="Stretch"
+                               MinHeight="70" Padding="16,0">
+                <controls:SettingsCard.HeaderIcon>
+                    <FontIcon Glyph="&#xEC12;"/>
+                </controls:SettingsCard.HeaderIcon>
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Spacing="12">
+                    <Slider x:Name="CornerRadiusSlider"
+                            Width="220"
+                            Minimum="0"
+                            Maximum="32"
+                            StepFrequency="1"
+                            TickFrequency="4"
+                            ValueChanged="CornerRadiusSlider_ValueChanged"/>
+                    <TextBlock x:Name="CornerRadiusValueText"
+                               MinWidth="30"
+                               TextAlignment="Right"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+            </controls:SettingsCard>
         </StackPanel>
     </ScrollViewer>
 </Page>

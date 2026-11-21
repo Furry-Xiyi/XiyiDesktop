@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Imaging;
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Runtime.InteropServices;
 using Windows.ApplicationModel;
 
@@ -17,13 +18,15 @@ internal static class WindowIconAssetResolver
         5);
 
     internal static void AssignPackageApplicationIdentity(Window window, string applicationId)
+        => AssignPackageApplicationIdentity(WinRT.Interop.WindowNative.GetWindowHandle(window), applicationId);
+
+    internal static void AssignPackageApplicationIdentity(IntPtr windowHandle, string applicationId)
     {
-        IPropertyStore? propertyStore = null;
+        var propertyStore = IntPtr.Zero;
         var appUserModelId = IntPtr.Zero;
         try
         {
             appUserModelId = Marshal.StringToCoTaskMemUni($"{Package.Current.Id.FamilyName}!{applicationId}");
-            var windowHandle = WinRT.Interop.WindowNative.GetWindowHandle(window);
             var interfaceId = PropertyStoreInterfaceId;
             var result = SHGetPropertyStoreForWindow(windowHandle, ref interfaceId, out propertyStore);
             Marshal.ThrowExceptionForHR(result);
@@ -35,8 +38,8 @@ internal static class WindowIconAssetResolver
             };
 
             var appUserModelIdKey = AppUserModelIdKey;
-            Marshal.ThrowExceptionForHR(propertyStore!.SetValue(ref appUserModelIdKey, ref value));
-            Marshal.ThrowExceptionForHR(propertyStore.Commit());
+            Marshal.ThrowExceptionForHR(SetPropertyValue(propertyStore, appUserModelIdKey, value));
+            Marshal.ThrowExceptionForHR(CommitPropertyStore(propertyStore));
         }
         catch (Exception exception)
         {
@@ -46,8 +49,7 @@ internal static class WindowIconAssetResolver
         {
             if (appUserModelId != IntPtr.Zero)
                 Marshal.FreeCoTaskMem(appUserModelId);
-            if (propertyStore is not null)
-                Marshal.ReleaseComObject(propertyStore);
+            ReleasePropertyStore(propertyStore);
         }
     }
 
@@ -65,22 +67,53 @@ internal static class WindowIconAssetResolver
         }
     }
 
+    internal static void SetWindowIcon(Window window, string assetDirectory)
+    {
+        try
+        {
+            var iconPath = Path.Combine(
+                Package.Current.InstalledLocation.Path,
+                "Assets",
+                assetDirectory,
+                "AppIcon.ico");
+            window.AppWindow.SetIcon(iconPath);
+        }
+        catch (Exception exception)
+        {
+            Debug.WriteLine($"Could not set the {assetDirectory} window icon: {exception.Message}");
+        }
+    }
+
     [DllImport("shell32.dll", ExactSpelling = true)]
     private static extern int SHGetPropertyStoreForWindow(
         IntPtr windowHandle,
         ref Guid interfaceId,
-        out IPropertyStore propertyStore);
+        out IntPtr propertyStore);
 
-    [ComImport]
-    [Guid("886D8EEB-8CF2-4446-8D02-CDBA1DBDCF99")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    private interface IPropertyStore
+    // Use the native IPropertyStore vtable directly so Native AOT does not need
+    // the built-in COM interface marshaller for this optional window property.
+    private static unsafe int SetPropertyValue(IntPtr propertyStore, PropertyKey key, PropVariant value)
     {
-        [PreserveSig] int GetCount(out uint propertyCount);
-        [PreserveSig] int GetAt(uint propertyIndex, out PropertyKey key);
-        [PreserveSig] int GetValue(ref PropertyKey key, out PropVariant value);
-        [PreserveSig] int SetValue(ref PropertyKey key, ref PropVariant value);
-        [PreserveSig] int Commit();
+        var vtable = *(IntPtr**)propertyStore;
+        var setValue = (delegate* unmanaged[Stdcall]<IntPtr, PropertyKey*, PropVariant*, int>)vtable[6];
+        return setValue(propertyStore, &key, &value);
+    }
+
+    private static unsafe int CommitPropertyStore(IntPtr propertyStore)
+    {
+        var vtable = *(IntPtr**)propertyStore;
+        var commit = (delegate* unmanaged[Stdcall]<IntPtr, int>)vtable[7];
+        return commit(propertyStore);
+    }
+
+    private static unsafe void ReleasePropertyStore(IntPtr propertyStore)
+    {
+        if (propertyStore == IntPtr.Zero)
+            return;
+
+        var vtable = *(IntPtr**)propertyStore;
+        var release = (delegate* unmanaged[Stdcall]<IntPtr, uint>)vtable[2];
+        release(propertyStore);
     }
 
     [StructLayout(LayoutKind.Sequential)]

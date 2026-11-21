@@ -1,5 +1,6 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Windowing;
 using Microsoft.Windows.ApplicationModel.Resources;
 using System;
 using System.Runtime.InteropServices;
@@ -19,7 +20,9 @@ namespace XiyiDesktop
         {
             InitializeComponent();
             Instance = this;
+            WindowIconAssetResolver.SetWindowIcon(this, "DesktopSettings");
             Closed += (_, _) => XiyiDesktop.App.OnSettingsWindowClosed(this);
+            AppWindow.Closing += AppWindow_Closing;
             TitleBarArea.Window = this;
 
             if (Content is FrameworkElement root)
@@ -32,6 +35,12 @@ namespace XiyiDesktop
 
             var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
             SetMinWindowSize(hwnd, minWidth: 800, minHeight: 520);
+        }
+
+        private void AppWindow_Closing(AppWindow sender, AppWindowClosingEventArgs args)
+        {
+            args.Cancel = true;
+            sender.Hide();
         }
 
         public async void OpenExternalLink(object sender, RoutedEventArgs e)

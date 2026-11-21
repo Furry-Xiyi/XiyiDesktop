@@ -40,12 +40,14 @@
                             <FontIcon Glyph="&#xE835;"/>
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
+                </NavigationView.MenuItems>
+                <NavigationView.FooterMenuItems>
                     <NavigationViewItem x:Uid="AboutNavItem" Tag="about">
                         <NavigationViewItem.Icon>
                             <FontIcon Glyph="&#xE946;"/>
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
-                </NavigationView.MenuItems>
+                </NavigationView.FooterMenuItems>
                 <Frame x:Name="ContentFrame"/>
             </NavigationView>
         </Grid>

@@ -162,7 +162,7 @@ public sealed partial class DesktopIconLayoutPanel : Canvas
         InvalidateArrange();
     }
 
-    /// <summary>Returns the cell dimensions currently used to align desktop icons.</summary>
+    /// <summary>Returns the evenly distributed cell dimensions currently used by the desktop grid.</summary>
     public Size GetGridCellSize()
     {
         var slotWidth = MinimumSlotWidth;
@@ -191,7 +191,23 @@ public sealed partial class DesktopIconLayoutPanel : Canvas
 
         if (slotWidth > MinimumSlotWidth || slotHeight > MinimumSlotHeight || hasVisibleIcons)
             _lastGridCellSize = new Size(slotWidth, slotHeight);
-        return _lastGridCellSize;
+
+        var viewportWidth = ResolveLayoutDimension(ActualWidth, _viewportSize.Width, _lastGridCellSize.Width);
+        var viewportHeight = ResolveLayoutDimension(ActualHeight, _viewportSize.Height, _lastGridCellSize.Height);
+        return DistributeGridCellSize(_lastGridCellSize, new Size(viewportWidth, viewportHeight));
+    }
+
+    public Point ClampPositionToGrid(Point position, Size footprint)
+    {
+        var cell = GetGridCellSize();
+        var viewport = new Size(
+            ResolveLayoutDimension(ActualWidth, _viewportSize.Width, cell.Width),
+            ResolveLayoutDimension(ActualHeight, _viewportSize.Height, cell.Height));
+        var columns = Math.Max(1, (int)Math.Floor(Math.Max(0, viewport.Width - footprint.Width + 0.001) / cell.Width) + 1);
+        var rows = Math.Max(1, (int)Math.Floor(Math.Max(0, viewport.Height - footprint.Height + 0.001) / cell.Height) + 1);
+        var column = Math.Clamp((int)Math.Round(Math.Max(0, position.X) / cell.Width), 0, columns - 1);
+        var row = Math.Clamp((int)Math.Round(Math.Max(0, position.Y) / cell.Height), 0, rows - 1);
+        return new Point(column * cell.Width, row * cell.Height);
     }
 
     /// <summary>Returns the padding inside each icon cell around its visible content.</summary>
@@ -701,9 +717,11 @@ public sealed partial class DesktopIconLayoutPanel : Canvas
         if (draggedCount == 0 || remainingCount == 0)
             return 0;
 
-        var slotWidth = Math.Max(MinimumSlotWidth, orderedItems.Max(item => item.TileWidth));
-        var slotHeight = Math.Max(MinimumSlotHeight, orderedItems.Max(item => item.TileHeight));
-        var rowCount = Math.Max(1, (int)Math.Floor(NormalizeDimension(_viewportSize.Height, ActualHeight) / slotHeight));
+        var cell = GetGridCellSize();
+        var slotWidth = cell.Width;
+        var slotHeight = cell.Height;
+        var viewportHeight = ResolveLayoutDimension(ActualHeight, _viewportSize.Height, slotHeight);
+        var rowCount = Math.Max(1, (int)Math.Floor(viewportHeight / slotHeight + 0.000001));
         var centerX = _draggedItems.Average(item => item.PositionX + item.TileWidth / 2);
         var centerY = _draggedItems.Average(item => item.PositionY + item.TileHeight / 2);
         var column = Math.Max(0, (int)Math.Floor(centerX / slotWidth));
@@ -716,10 +734,11 @@ public sealed partial class DesktopIconLayoutPanel : Canvas
         if (orderedItems.Count == 0)
             return;
 
-        var slotWidth = Math.Max(MinimumSlotWidth, orderedItems.Max(item => item.TileWidth));
-        var slotHeight = Math.Max(MinimumSlotHeight, orderedItems.Max(item => item.TileHeight));
-        var viewportHeight = NormalizeDimension(_viewportSize.Height, ActualHeight);
-        var rowCount = Math.Max(1, (int)Math.Floor(viewportHeight / slotHeight));
+        var cell = GetGridCellSize();
+        var slotWidth = cell.Width;
+        var slotHeight = cell.Height;
+        var viewportHeight = ResolveLayoutDimension(ActualHeight, _viewportSize.Height, slotHeight);
+        var rowCount = Math.Max(1, (int)Math.Floor(viewportHeight / slotHeight + 0.000001));
         for (var index = 0; index < orderedItems.Count; index++)
             orderedItems[index].SetPosition((index / rowCount) * slotWidth, (index % rowCount) * slotHeight);
     }
@@ -731,8 +750,9 @@ public sealed partial class DesktopIconLayoutPanel : Canvas
         if (items.Count == 0)
             return;
 
-        var slotWidth = Math.Max(MinimumSlotWidth, anchorItem.TileWidth);
-        var slotHeight = Math.Max(MinimumSlotHeight, anchorItem.TileHeight);
+        var cell = GetGridCellSize();
+        var slotWidth = cell.Width;
+        var slotHeight = cell.Height;
         var snapped = DesktopLayoutEngine.Snap(
             new DesktopLayoutEngine.Point(anchorItem.PositionX, anchorItem.PositionY),
             new DesktopLayoutEngine.Size(slotWidth, slotHeight));
@@ -756,6 +776,12 @@ public sealed partial class DesktopIconLayoutPanel : Canvas
         var viewportHeight = NormalizeDimension(_viewportSize.Height, ActualHeight);
         var deltaX = GetGroupClampDelta(minX, maxX, viewportWidth);
         var deltaY = GetGroupClampDelta(minY, maxY, viewportHeight);
+        if (XiyiDesktop.AppSettingsStore.AlignIconsToGrid)
+        {
+            var cell = GetGridCellSize();
+            deltaX = GetGridAlignedGroupClampDelta(minX, maxX, viewportWidth, cell.Width);
+            deltaY = GetGridAlignedGroupClampDelta(minY, maxY, viewportHeight, cell.Height);
+        }
         foreach (var item in items)
             item.SetPosition(item.PositionX + deltaX, item.PositionY + deltaY);
         InvalidateArrange();
@@ -770,6 +796,23 @@ public sealed partial class DesktopIconLayoutPanel : Canvas
         if (maximum > viewportLength)
             return viewportLength - maximum;
         return 0;
+    }
+
+    private static double GetGridAlignedGroupClampDelta(
+        double minimum,
+        double maximum,
+        double viewportLength,
+        double cellLength)
+    {
+        if (viewportLength <= 0 || maximum - minimum > viewportLength)
+            return GetGroupClampDelta(minimum, maximum, viewportLength);
+
+        var minimumDelta = Math.Ceiling((-minimum / cellLength) - 0.000001);
+        var maximumDelta = Math.Floor(((viewportLength - maximum) / cellLength) + 0.000001);
+        if (minimumDelta > maximumDelta)
+            return GetGroupClampDelta(minimum, maximum, viewportLength);
+
+        return Math.Clamp(0, minimumDelta, maximumDelta) * cellLength;
     }
 
     public bool TryGetItemBounds(
@@ -959,8 +1002,13 @@ public sealed partial class DesktopIconLayoutPanel : Canvas
 
         var layoutWidth = ResolveLayoutDimension(finalSize.Width, _viewportSize.Width, slotWidth);
         var layoutHeight = ResolveLayoutDimension(finalSize.Height, _viewportSize.Height, slotHeight);
+        var distributedCell = DistributeGridCellSize(
+            new Size(slotWidth, slotHeight),
+            new Size(layoutWidth, layoutHeight));
+        slotWidth = distributedCell.Width;
+        slotHeight = distributedCell.Height;
         var rowCount = layoutHeight > 0
-            ? Math.Max(1, (int)Math.Min(int.MaxValue, Math.Floor(layoutHeight / slotHeight)))
+            ? Math.Max(1, (int)Math.Min(int.MaxValue, Math.Floor(layoutHeight / slotHeight + 0.000001)))
             : 1;
         var hasUsableFreeLayoutSize = layoutWidth > 0 && layoutHeight > 0;
         var collisionItems = GetVisibleExternalOccupiedItems();
@@ -1023,6 +1071,7 @@ public sealed partial class DesktopIconLayoutPanel : Canvas
                 var x = (index / rowCount) * slotWidth;
                 var y = (index % rowCount) * slotHeight;
                 (x, y) = ClampPosition(x, y, new Size(layoutWidth, layoutHeight), width, height, clampToViewport: true);
+                (x, y) = ClampToGrid(x, y, new Size(layoutWidth, layoutHeight), slotWidth, slotHeight);
                 var visibleBounds = GetVisibleItemBounds(item, x, y);
                 if (OverlapsPlacedItem(visibleBounds.X, visibleBounds.Y, visibleBounds.Width, visibleBounds.Height, collisionItems))
                 {
@@ -1091,6 +1140,8 @@ public sealed partial class DesktopIconLayoutPanel : Canvas
                     width,
                     height,
                     clampToViewport: !autoArrange);
+                if (alignToGrid)
+                    (left, top) = ClampToGrid(left, top, new Size(layoutWidth, layoutHeight), slotWidth, slotHeight);
 
                 var visibleBounds = GetVisibleItemBounds(item, left, top);
                 if (OverlapsPlacedItem(
@@ -1210,6 +1261,8 @@ public sealed partial class DesktopIconLayoutPanel : Canvas
                 item.TileWidth,
                 item.TileHeight,
                 clampToViewport: true);
+            if (alignToGrid)
+                (left, top) = ClampToGrid(left, top, layoutSize, slotWidth, slotHeight);
             if (displacedItemSet.Contains(item))
             {
                 displacedItems.Add((index, item, presenter, left, top));
@@ -1241,6 +1294,8 @@ public sealed partial class DesktopIconLayoutPanel : Canvas
                 displaced.Item.TileWidth,
                 displaced.Item.TileHeight,
                 clampToViewport: true);
+            if (alignToGrid)
+                (sourceX, sourceY) = ClampToGrid(sourceX, sourceY, layoutSize, slotWidth, slotHeight);
             var sourceBounds = GetVisibleItemBounds(displaced.Item, sourceX, sourceY);
             var (left, top) = OverlapsPlacedItem(
                 sourceBounds.X,
@@ -1313,6 +1368,8 @@ public sealed partial class DesktopIconLayoutPanel : Canvas
             }
 
             (left, top) = ClampPosition(left, top, layoutSize, item.TileWidth, item.TileHeight, clampToViewport: true);
+            if (autoArrange || alignToGrid)
+                (left, top) = ClampToGrid(left, top, layoutSize, slotWidth, slotHeight);
             var visibleBounds = GetVisibleItemBounds(item, left, top);
             var overlapsMovingWidget = movingWidgetBounds.Any(widgetBounds =>
                 visibleBounds.X < widgetBounds.X + widgetBounds.Width &&
@@ -1399,7 +1456,8 @@ public sealed partial class DesktopIconLayoutPanel : Canvas
         if (foundPosition)
             return bestPosition;
 
-        return ClampPosition(requestedX, requestedY, layoutSize, item.TileWidth, item.TileHeight, clampToViewport: true);
+        var clamped = ClampPosition(requestedX, requestedY, layoutSize, item.TileWidth, item.TileHeight, clampToViewport: true);
+        return ClampToGrid(clamped.X, clamped.Y, layoutSize, slotWidth, slotHeight);
     }
 
     private static bool OverlapsPlacedItem(
@@ -1429,25 +1487,38 @@ public sealed partial class DesktopIconLayoutPanel : Canvas
 
     public void ClampItemPosition(XiyiDesktop.DesktopItemViewModel item)
     {
+        var layoutSize = new Size(
+            NormalizeDimension(ActualWidth, _viewportSize.Width),
+            NormalizeDimension(ActualHeight, _viewportSize.Height));
         var (left, top) = ClampPosition(
             item.PositionX,
             item.PositionY,
-            new Size(NormalizeDimension(ActualWidth, _viewportSize.Width), NormalizeDimension(ActualHeight, _viewportSize.Height)),
+            layoutSize,
             item.TileWidth,
             item.TileHeight,
             clampToViewport: true);
+        if (XiyiDesktop.AppSettingsStore.AlignIconsToGrid)
+        {
+            var cell = GetGridCellSize();
+            (left, top) = ClampToGrid(left, top, layoutSize, cell.Width, cell.Height);
+        }
         item.SetPosition(left, top);
         InvalidateArrange();
     }
 
     public void SnapItemPosition(XiyiDesktop.DesktopItemViewModel item)
     {
-        var slotWidth = Math.Max(MinimumSlotWidth, item.TileWidth);
-        var slotHeight = Math.Max(MinimumSlotHeight, item.TileHeight);
+        var cell = GetGridCellSize();
+        var slotWidth = cell.Width;
+        var slotHeight = cell.Height;
         var snapped = DesktopLayoutEngine.Snap(
             new DesktopLayoutEngine.Point(item.PositionX, item.PositionY),
             new DesktopLayoutEngine.Size(slotWidth, slotHeight));
-        item.SetPosition(snapped.X, snapped.Y);
+        var layoutSize = new Size(
+            NormalizeDimension(ActualWidth, _viewportSize.Width),
+            NormalizeDimension(ActualHeight, _viewportSize.Height));
+        var (left, top) = ClampToGrid(snapped.X, snapped.Y, layoutSize, slotWidth, slotHeight);
+        item.SetPosition(left, top);
         InvalidateArrange();
     }
 
@@ -1494,6 +1565,38 @@ public sealed partial class DesktopIconLayoutPanel : Canvas
                 ? viewportSize
                 : 0;
         return Math.Min(resolved, 100000);
+    }
+
+    private static Size DistributeGridCellSize(Size minimumCell, Size viewport)
+    {
+        static double DistributeDimension(double minimum, double available)
+        {
+            if (!double.IsFinite(available) || available <= 0 || available < minimum)
+                return minimum;
+
+            var cellCount = Math.Max(1, (int)Math.Floor(available / minimum));
+            return available / cellCount;
+        }
+
+        return new Size(
+            DistributeDimension(minimumCell.Width, viewport.Width),
+            DistributeDimension(minimumCell.Height, viewport.Height));
+    }
+
+    private static (double X, double Y) ClampToGrid(
+        double x,
+        double y,
+        Size layoutSize,
+        double cellWidth,
+        double cellHeight)
+    {
+        var columns = Math.Max(1, (int)Math.Floor(layoutSize.Width / cellWidth + 0.000001));
+        var rows = Math.Max(1, (int)Math.Floor(layoutSize.Height / cellHeight + 0.000001));
+        var maxX = (columns - 1) * cellWidth;
+        var maxY = (rows - 1) * cellHeight;
+        return (
+            Math.Clamp(Math.Round(x / cellWidth) * cellWidth, 0, maxX),
+            Math.Clamp(Math.Round(y / cellHeight) * cellHeight, 0, maxY));
     }
 
     private static double NormalizeCoordinate(double value) =>

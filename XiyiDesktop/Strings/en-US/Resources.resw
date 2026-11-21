@@ -198,65 +198,177 @@
   <data name="DesktopContext_Paste.Text" xml:space="preserve">
     <value>Paste</value>
   </data>
-  <data name="DesktopContext_View.Text" xml:space="preserve"><value>View</value></data>
-  <data name="DesktopContext_ShowIcons.Text" xml:space="preserve"><value>Show desktop icons</value></data>
-  <data name="DesktopContext_AutoArrange.Text" xml:space="preserve"><value>Auto arrange icons</value></data>
-  <data name="DesktopContext_AlignToGrid.Text" xml:space="preserve"><value>Align icons to grid</value></data>
-  <data name="DesktopDrag_Move" xml:space="preserve"><value>Move</value></data>
-  <data name="DesktopDrag_Copy" xml:space="preserve"><value>Copy</value></data>
-  <data name="DesktopDrag_Delete" xml:space="preserve"><value>Delete</value></data>
-  <data name="DesktopContext_HideIcons.Text" xml:space="preserve"><value>Hide desktop icons</value></data>
-  <data name="DesktopContext_SortBy.Text" xml:space="preserve"><value>Sort by</value></data>
-  <data name="DesktopContext_UndoDelete.Text" xml:space="preserve"><value>Undo Delete</value></data>
-  <data name="DesktopContext_New.Text" xml:space="preserve"><value>New</value></data>
-  <data name="DesktopContext_DisplaySettings.Text" xml:space="preserve"><value>Display settings</value></data>
-  <data name="DesktopContext_Personalize.Text" xml:space="preserve"><value>Personalize</value></data>
-  <data name="DesktopContext_OpenInTerminal.Text" xml:space="preserve"><value>Open in Terminal</value></data>
-  <data name="DesktopContext_ApplicationExtensions.Text" xml:space="preserve"><value>Application extensions</value></data>
-  <data name="DesktopContext_CustomizeMenu.Text" xml:space="preserve"><value>Customize menu</value></data>
-  <data name="DesktopContext_ManageExtensions.Text" xml:space="preserve"><value>Manage extensions</value></data>
-  <data name="DesktopContext_NewFolder.Text" xml:space="preserve"><value>Folder</value></data>
-  <data name="DesktopContext_NewTextDocument.Text" xml:space="preserve"><value>Text document</value></data>
-  <data name="DesktopContext_NewShortcut.Text" xml:space="preserve"><value>Shortcut</value></data>
-  <data name="DesktopContext_NewBitmap.Text" xml:space="preserve"><value>BMP image</value></data>
-  <data name="DesktopContext_NewWord.Text" xml:space="preserve"><value>Microsoft Word document</value></data>
-  <data name="DesktopContext_NewPowerPoint.Text" xml:space="preserve"><value>Microsoft PowerPoint presentation</value></data>
-  <data name="DesktopContext_NewExcel.Text" xml:space="preserve"><value>Microsoft Excel worksheet</value></data>
-  <data name="DesktopContext_NewCompressedFolder.Text" xml:space="preserve"><value>Compressed (zipped) folder</value></data>
-  <data name="DesktopContext_NewFolderName" xml:space="preserve"><value>New folder</value></data>
-  <data name="DesktopContext_NewTextDocumentName" xml:space="preserve"><value>New Text Document.txt</value></data>
-  <data name="DesktopContext_NewShortcutName" xml:space="preserve"><value>New Shortcut.lnk</value></data>
-  <data name="DesktopContext_NewShortcutTarget" xml:space="preserve"><value>Enter the full path of the file or folder this shortcut should open.</value></data>
-  <data name="DesktopContext_NewBitmapName" xml:space="preserve"><value>New Bitmap Image.bmp</value></data>
-  <data name="DesktopContext_NewWordName" xml:space="preserve"><value>New Microsoft Word Document.docx</value></data>
-  <data name="DesktopContext_NewPowerPointName" xml:space="preserve"><value>New Microsoft PowerPoint Presentation.pptx</value></data>
-  <data name="DesktopContext_NewExcelName" xml:space="preserve"><value>New Microsoft Excel Worksheet.xlsx</value></data>
-  <data name="DesktopContext_NewCompressedFolderName" xml:space="preserve"><value>New Compressed (zipped) Folder.zip</value></data>
-  <data name="DesktopContext_NewTextDocumentTemplate" xml:space="preserve"><value>New Text Document</value></data>
-  <data name="DesktopContext_OpenDesktopInExplorer.Text" xml:space="preserve"><value>Open desktop in File Explorer</value></data>
-  <data name="DesktopContext_ManageInstalledApps.Text" xml:space="preserve"><value>Manage installed apps</value></data>
-  <data name="DesktopView_Small.Text" xml:space="preserve"><value>Small icons</value></data>
-  <data name="DesktopView_Medium.Text" xml:space="preserve"><value>Medium icons</value></data>
-  <data name="DesktopView_Large.Text" xml:space="preserve"><value>Large icons</value></data>
-  <data name="DesktopSort_Name.Text" xml:space="preserve"><value>Name</value></data>
-  <data name="DesktopSort_Manual.Text" xml:space="preserve"><value>Manual</value></data>
-  <data name="DesktopSort_Size.Text" xml:space="preserve"><value>Size</value></data>
-  <data name="DesktopSort_Type.Text" xml:space="preserve"><value>Item type</value></data>
-  <data name="DesktopSort_Modified.Text" xml:space="preserve"><value>Date modified</value></data>
-  <data name="DesktopContext_CustomizeTitle" xml:space="preserve"><value>Customize desktop menu</value></data>
-  <data name="DesktopContext_CustomizeDescription" xml:space="preserve"><value>Configure this app's menu entries. Candidate Windows registry settings are read only; this dialog does not change Windows settings.</value></data>
-  <data name="DesktopContext_ShowExtensions" xml:space="preserve"><value>Show application-extension compatibility entries</value></data>
-  <data name="DesktopContext_RegistryValues" xml:space="preserve"><value>Detected Windows context-menu candidate values</value></data>
-  <data name="DesktopContext_UnknownValue" xml:space="preserve"><value>Not set or unavailable</value></data>
-  <data name="DesktopContext_Save" xml:space="preserve"><value>Save</value></data>
-  <data name="DesktopContext_Cancel" xml:space="preserve"><value>Cancel</value></data>
-  <data name="DesktopContext_NewItemFailed" xml:space="preserve"><value>Could not create this item on the desktop.</value></data>
-  <data name="DesktopContext_RestoreHelp" xml:space="preserve"><value>Deleted desktop items are moved to the Windows Recycle Bin. Select an item there and choose Restore.</value></data>
+  <data name="DesktopContext_View.Text" xml:space="preserve">
+    <value>View</value>
+  </data>
+  <data name="DesktopContext_ShowIcons.Text" xml:space="preserve">
+    <value>Show desktop icons</value>
+  </data>
+  <data name="DesktopContext_AutoArrange.Text" xml:space="preserve">
+    <value>Auto arrange icons</value>
+  </data>
+  <data name="DesktopContext_AlignToGrid.Text" xml:space="preserve">
+    <value>Align icons to grid</value>
+  </data>
+  <data name="DesktopDrag_Move" xml:space="preserve">
+    <value>Move</value>
+  </data>
+  <data name="DesktopDrag_Copy" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="DesktopDrag_Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="DesktopContext_HideIcons.Text" xml:space="preserve">
+    <value>Hide desktop icons</value>
+  </data>
+  <data name="DesktopContext_SortBy.Text" xml:space="preserve">
+    <value>Sort by</value>
+  </data>
+  <data name="DesktopContext_UndoDelete.Text" xml:space="preserve">
+    <value>Undo Delete</value>
+  </data>
+  <data name="DesktopContext_New.Text" xml:space="preserve">
+    <value>New</value>
+  </data>
+  <data name="DesktopContext_DisplaySettings.Text" xml:space="preserve">
+    <value>Display settings</value>
+  </data>
+  <data name="DesktopContext_Personalize.Text" xml:space="preserve">
+    <value>Personalize</value>
+  </data>
+  <data name="DesktopContext_OpenInTerminal.Text" xml:space="preserve">
+    <value>Open in Terminal</value>
+  </data>
+  <data name="DesktopContext_ApplicationExtensions.Text" xml:space="preserve">
+    <value>Application extensions</value>
+  </data>
+  <data name="DesktopContext_CustomizeMenu.Text" xml:space="preserve">
+    <value>Customize menu</value>
+  </data>
+  <data name="DesktopContext_ManageExtensions.Text" xml:space="preserve">
+    <value>Manage extensions</value>
+  </data>
+  <data name="DesktopContext_NewFolder.Text" xml:space="preserve">
+    <value>Folder</value>
+  </data>
+  <data name="DesktopContext_NewTextDocument.Text" xml:space="preserve">
+    <value>Text document</value>
+  </data>
+  <data name="DesktopContext_NewShortcut.Text" xml:space="preserve">
+    <value>Shortcut</value>
+  </data>
+  <data name="DesktopContext_NewBitmap.Text" xml:space="preserve">
+    <value>BMP image</value>
+  </data>
+  <data name="DesktopContext_NewWord.Text" xml:space="preserve">
+    <value>Microsoft Word document</value>
+  </data>
+  <data name="DesktopContext_NewPowerPoint.Text" xml:space="preserve">
+    <value>Microsoft PowerPoint presentation</value>
+  </data>
+  <data name="DesktopContext_NewExcel.Text" xml:space="preserve">
+    <value>Microsoft Excel worksheet</value>
+  </data>
+  <data name="DesktopContext_NewCompressedFolder.Text" xml:space="preserve">
+    <value>Compressed (zipped) folder</value>
+  </data>
+  <data name="DesktopContext_NewFolderName" xml:space="preserve">
+    <value>New folder</value>
+  </data>
+  <data name="DesktopContext_NewTextDocumentName" xml:space="preserve">
+    <value>New Text Document.txt</value>
+  </data>
+  <data name="DesktopContext_NewShortcutName" xml:space="preserve">
+    <value>New Shortcut.lnk</value>
+  </data>
+  <data name="DesktopContext_NewShortcutTarget" xml:space="preserve">
+    <value>Enter the full path of the file or folder this shortcut should open.</value>
+  </data>
+  <data name="DesktopContext_NewBitmapName" xml:space="preserve">
+    <value>New Bitmap Image.bmp</value>
+  </data>
+  <data name="DesktopContext_NewWordName" xml:space="preserve">
+    <value>New Microsoft Word Document.docx</value>
+  </data>
+  <data name="DesktopContext_NewPowerPointName" xml:space="preserve">
+    <value>New Microsoft PowerPoint Presentation.pptx</value>
+  </data>
+  <data name="DesktopContext_NewExcelName" xml:space="preserve">
+    <value>New Microsoft Excel Worksheet.xlsx</value>
+  </data>
+  <data name="DesktopContext_NewCompressedFolderName" xml:space="preserve">
+    <value>New Compressed (zipped) Folder.zip</value>
+  </data>
+  <data name="DesktopContext_NewTextDocumentTemplate" xml:space="preserve">
+    <value>New Text Document</value>
+  </data>
+  <data name="DesktopContext_OpenDesktopInExplorer.Text" xml:space="preserve">
+    <value>Open desktop in File Explorer</value>
+  </data>
+  <data name="DesktopContext_ManageInstalledApps.Text" xml:space="preserve">
+    <value>Manage installed apps</value>
+  </data>
+  <data name="DesktopView_Small.Text" xml:space="preserve">
+    <value>Small icons</value>
+  </data>
+  <data name="DesktopView_Medium.Text" xml:space="preserve">
+    <value>Medium icons</value>
+  </data>
+  <data name="DesktopView_Large.Text" xml:space="preserve">
+    <value>Large icons</value>
+  </data>
+  <data name="DesktopSort_Name.Text" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="DesktopSort_Manual.Text" xml:space="preserve">
+    <value>Manual</value>
+  </data>
+  <data name="DesktopSort_Size.Text" xml:space="preserve">
+    <value>Size</value>
+  </data>
+  <data name="DesktopSort_Type.Text" xml:space="preserve">
+    <value>Item type</value>
+  </data>
+  <data name="DesktopSort_Modified.Text" xml:space="preserve">
+    <value>Date modified</value>
+  </data>
+  <data name="DesktopContext_CustomizeTitle" xml:space="preserve">
+    <value>Customize desktop menu</value>
+  </data>
+  <data name="DesktopContext_CustomizeDescription" xml:space="preserve">
+    <value>Configure this app's menu entries. Candidate Windows registry settings are read only; this dialog does not change Windows settings.</value>
+  </data>
+  <data name="DesktopContext_ShowExtensions" xml:space="preserve">
+    <value>Show application-extension compatibility entries</value>
+  </data>
+  <data name="DesktopContext_RegistryValues" xml:space="preserve">
+    <value>Detected Windows context-menu candidate values</value>
+  </data>
+  <data name="DesktopContext_UnknownValue" xml:space="preserve">
+    <value>Not set or unavailable</value>
+  </data>
+  <data name="DesktopContext_Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="DesktopContext_Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="DesktopContext_NewItemFailed" xml:space="preserve">
+    <value>Could not create this item on the desktop.</value>
+  </data>
+  <data name="DesktopContext_RestoreHelp" xml:space="preserve">
+    <value>Deleted desktop items are moved to the Windows Recycle Bin. Select an item there and choose Restore.</value>
+  </data>
   <data name="DesktopItemContext_Open.Text" xml:space="preserve">
     <value>Open</value>
   </data>
-  <data name="DesktopItemContext_OpenFileLocation.Text" xml:space="preserve"><value>Open file location</value></data>
-  <data name="DesktopItemContext_RunAsAdministrator.Text" xml:space="preserve"><value>Run as administrator</value></data>
+  <data name="DesktopItemContext_OpenFileLocation.Text" xml:space="preserve">
+    <value>Open file location</value>
+  </data>
+  <data name="DesktopItemContext_RunAsAdministrator.Text" xml:space="preserve">
+    <value>Run as administrator</value>
+  </data>
   <data name="DesktopItemContext_Copy.Text" xml:space="preserve">
     <value>Copy</value>
   </data>
@@ -320,231 +432,559 @@
   <data name="DesktopAction_Close" xml:space="preserve">
     <value>Close</value>
   </data>
-<data name="SettingsWindowTitle" xml:space="preserve">
+  <data name="SettingsWindowTitle" xml:space="preserve">
     <value>Xiyi Desktop Settings</value>
-  </data><data name="HomeItem.Content" xml:space="preserve">
+  </data>
+  <data name="HomeItem.Content" xml:space="preserve">
     <value>Overview</value>
-  </data><data name="HomePageWelcomeText.Text" xml:space="preserve">
+  </data>
+  <data name="HomePageWelcomeText.Text" xml:space="preserve">
     <value>Welcome to Xiyi Desktop settings</value>
-  </data><data name="AppearanceGroup.Text" xml:space="preserve">
-    <value>Appearance</value>
-  </data><data name="ThemeTitle.Text" xml:space="preserve">
+  </data>
+  <data name="AppearanceGroup.Text" xml:space="preserve">
+    <value>Personalized</value>
+  </data>
+  <data name="ThemeTitle.Text" xml:space="preserve">
     <value>App Theme</value>
-  </data><data name="ThemeSubtitle.Text" xml:space="preserve">
+  </data>
+  <data name="ThemeSubtitle.Text" xml:space="preserve">
     <value>Select the app theme to display</value>
-  </data><data name="ThemeSystem.Content" xml:space="preserve">
+  </data>
+  <data name="ThemeSystem.Content" xml:space="preserve">
     <value>System Default</value>
-  </data><data name="ThemeLight.Content" xml:space="preserve">
+  </data>
+  <data name="ThemeLight.Content" xml:space="preserve">
     <value>Light</value>
-  </data><data name="ThemeDark.Content" xml:space="preserve">
+  </data>
+  <data name="ThemeDark.Content" xml:space="preserve">
     <value>Dark</value>
-  </data><data name="MaterialTitle.Text" xml:space="preserve">
+  </data>
+  <data name="MaterialTitle.Text" xml:space="preserve">
     <value>Background Material</value>
-  </data><data name="MaterialSubtitle.Text" xml:space="preserve">
+  </data>
+  <data name="MaterialSubtitle.Text" xml:space="preserve">
     <value>Select the app material to display</value>
-  </data><data name="MaterialMica.Content" xml:space="preserve">
+  </data>
+  <data name="MaterialMica.Content" xml:space="preserve">
     <value>Mica</value>
-  </data><data name="MaterialMicaAlt.Content" xml:space="preserve">
+  </data>
+  <data name="MaterialMicaAlt.Content" xml:space="preserve">
     <value>Mica Alt</value>
-  </data><data name="MaterialAcrylic.Content" xml:space="preserve">
+  </data>
+  <data name="MaterialAcrylic.Content" xml:space="preserve">
     <value>Acrylic</value>
-  </data><data name="PanePositionLeft.Content" xml:space="preserve">
+  </data>
+  <data name="PanePositionLeft.Content" xml:space="preserve">
     <value>Left</value>
-  </data><data name="PanePositionTop.Content" xml:space="preserve">
+  </data>
+  <data name="PanePositionTop.Content" xml:space="preserve">
     <value>Top</value>
-  </data><data name="SoundGroup.Text" xml:space="preserve">
+  </data>
+  <data name="SoundGroup.Text" xml:space="preserve">
     <value>Sound</value>
-  </data><data name="SoundToggle.Header" xml:space="preserve">
+  </data>
+  <data name="SoundToggle.Header" xml:space="preserve">
     <value>Enable Control Sounds</value>
-  </data><data name="AboutGroup.Text" xml:space="preserve">
+  </data>
+  <data name="AboutGroup.Text" xml:space="preserve">
     <value>About</value>
-  </data><data name="QQGroup.Text" xml:space="preserve">
+  </data>
+  <data name="QQGroup.Text" xml:space="preserve">
     <value>QQ Group</value>
-  </data><data name="DiscordGroup.Text" xml:space="preserve">
+  </data>
+  <data name="DiscordGroup.Text" xml:space="preserve">
     <value>Discord Channel</value>
-  </data><data name="Feedback.Text" xml:space="preserve">
+  </data>
+  <data name="Feedback.Text" xml:space="preserve">
     <value>Send Feedback</value>
-  </data><data name="ExternalOpenDialog.Title" xml:space="preserve">
+  </data>
+  <data name="ExternalOpenDialog.Title" xml:space="preserve">
     <value>This app is trying to open an external application</value>
-  </data><data name="ExternalOpenDialog.PrimaryButtonText" xml:space="preserve">
+  </data>
+  <data name="ExternalOpenDialog.PrimaryButtonText" xml:space="preserve">
     <value>Open</value>
-  </data><data name="ExternalOpenDialog.SecondaryButtonText" xml:space="preserve">
+  </data>
+  <data name="ExternalOpenDialog.SecondaryButtonText" xml:space="preserve">
     <value>Cancel</value>
-  </data><data name="DialogMessage.Text" xml:space="preserve">
+  </data>
+  <data name="DialogMessage.Text" xml:space="preserve">
     <value>Do you allow it?</value>
-  </data><data name="HomePageJoinButton.Content" xml:space="preserve">
+  </data>
+  <data name="HomePageJoinButton.Content" xml:space="preserve">
     <value>View GitHub repository</value>
-  </data><data name="Settings_SoundCard.Description" xml:space="preserve">
+  </data>
+  <data name="Settings_SoundCard.Description" xml:space="preserve">
     <value>Control interaction sounds in the app</value>
-  </data><data name="Settings_NavCard.Description" xml:space="preserve">
+  </data>
+  <data name="Settings_NavCard.Description" xml:space="preserve">
     <value>Select the navigation bar position to display</value>
-  </data><data name="Settings_SoundCard.Header" xml:space="preserve">
+  </data>
+  <data name="Settings_SoundCard.Header" xml:space="preserve">
     <value>Control sound</value>
-  </data><data name="Settings_NavCard.Header" xml:space="preserve">
+  </data>
+  <data name="Settings_NavCard.Header" xml:space="preserve">
     <value>Navigation Pane Position</value>
-  </data><data name="Settings_Breadcrumb" xml:space="preserve">
+  </data>
+  <data name="Settings_Breadcrumb" xml:space="preserve">
     <value>Settings</value>
-  </data><data name="SettingsTitle.Text" xml:space="preserve">
+  </data>
+  <data name="SettingsTitle.Text" xml:space="preserve">
     <value>Settings</value>
-  </data><data name="SettingsHomeNavItem.Content" xml:space="preserve">
+  </data>
+  <data name="SettingsHomeNavItem.Content" xml:space="preserve">
     <value>Overview</value>
-  </data><data name="AppearanceNavItem.Content" xml:space="preserve">
-    <value>Appearance</value>
-  </data><data name="InteractionNavItem.Content" xml:space="preserve">
+  </data>
+  <data name="AppearanceNavItem.Content" xml:space="preserve">
+    <value>Personalized</value>
+  </data>
+  <data name="InteractionNavItem.Content" xml:space="preserve">
     <value>Interaction</value>
-  </data><data name="AboutNavItem.Content" xml:space="preserve">
+  </data>
+  <data name="AboutNavItem.Content" xml:space="preserve">
     <value>About</value>
-  </data><data name="AppearancePageTitle.Text" xml:space="preserve">
-    <value>Appearance</value>
-  </data><data name="AppearancePageDescription.Text" xml:space="preserve">
-    <value>Configure the settings window theme, background material, and shortcut-arrow display on desktop icons.</value>
-  </data><data name="ThemeSettingsCard.Header" xml:space="preserve">
+  </data>
+  <data name="AppearancePageTitle.Text" xml:space="preserve">
+    <value>Personalized</value>
+  </data>
+  <data name="PowerSoundsExpander.Header" xml:space="preserve">
+    <value>Charging sounds</value>
+  </data>
+  <data name="PowerSoundsExpander.Description" xml:space="preserve">
+    <value>Play a sound when power is connected or disconnected</value>
+  </data>
+  <data name="PowerSoundsCustomCheckBox.Content" xml:space="preserve">
+    <value>Custom charging sounds</value>
+  </data>
+  <data name="PowerConnectedSoundCard.Header" xml:space="preserve">
+    <value>Power connected</value>
+  </data>
+  <data name="PowerConnectedSoundCard.Description" xml:space="preserve">
+    <value>Use the Windows default sound</value>
+  </data>
+  <data name="PowerDisconnectedSoundCard.Header" xml:space="preserve">
+    <value>Power disconnected</value>
+  </data>
+  <data name="PowerDisconnectedSoundCard.Description" xml:space="preserve">
+    <value>Use the Windows default sound</value>
+  </data>
+  <data name="PowerSoundDefaultDescription" xml:space="preserve">
+    <value>Use the Windows default sound</value>
+  </data>
+  <data name="PowerSoundResetTooltip" xml:space="preserve">
+    <value>Set to default</value>
+  </data>
+  <data name="PowerConnectedSoundChooseButton.Content" xml:space="preserve">
+    <value>Choose file</value>
+  </data>
+  <data name="PowerDisconnectedSoundChooseButton.Content" xml:space="preserve">
+    <value>Choose file</value>
+  </data>
+  <data name="ThemeSettingsCard.Header" xml:space="preserve">
     <value>App theme</value>
-  </data><data name="ThemeSettingsCard.Description" xml:space="preserve">
+  </data>
+  <data name="ThemeSettingsCard.Description" xml:space="preserve">
     <value>Choose light, dark, or follow the system.</value>
-  </data><data name="MaterialSettingsCard.Header" xml:space="preserve">
+  </data>
+  <data name="MaterialSettingsCard.Header" xml:space="preserve">
     <value>Background material</value>
-  </data><data name="MaterialSettingsCard.Description" xml:space="preserve">
+  </data>
+  <data name="MaterialSettingsCard.Description" xml:space="preserve">
     <value>Choose the background effect for the settings window.</value>
-  </data><data name="ShortcutArrowSettingsCard.Header" xml:space="preserve">
+  </data>
+  <data name="ShortcutArrowSettingsCard.Header" xml:space="preserve">
     <value>Shortcut arrow</value>
-  </data><data name="ShortcutArrowSettingsCard.Description" xml:space="preserve">
+  </data>
+  <data name="ShortcutArrowSettingsCard.Description" xml:space="preserve">
     <value>Show the Windows shortcut arrow on desktop shortcut icons.</value>
-  </data><data name="InteractionPageTitle.Text" xml:space="preserve">
+  </data>
+  <data name="CornerRadiusSettingsCard.Header" xml:space="preserve">
+    <value>Corner radius</value>
+  </data>
+  <data name="CornerRadiusSettingsCard.Description" xml:space="preserve">
+    <value>Adjust the corner radius of the selection box, desktop icons, and widgets (range 0–32).</value>
+  </data>
+  <data name="InteractionPageTitle.Text" xml:space="preserve">
     <value>Interaction</value>
-  </data><data name="InteractionPageDescription.Text" xml:space="preserve">
-    <value>Configure navigation placement and in-app interaction sounds.</value>
-  </data><data name="AboutPageTitle.Text" xml:space="preserve">
+  </data>
+  <data name="AboutPageTitle.Text" xml:space="preserve">
     <value>About</value>
-  </data><data name="AboutPageDescription.Text" xml:space="preserve">
-    <value>View the app version, community links, and feedback options.</value>
-  </data><data name="AboutCommunityHeading.Text" xml:space="preserve">
+  </data>
+  <data name="AboutCommunityHeading.Text" xml:space="preserve">
     <value>Community and feedback</value>
-  </data><data name="AboutCopyright" xml:space="preserve">
+  </data>
+  <data name="AboutCopyright" xml:space="preserve">
     <value>© {0} {1}. All rights reserved.</value>
-  </data><data name="DesktopRefreshPlaceholder" xml:space="preserve">
+  </data>
+  <data name="DesktopRefreshPlaceholder" xml:space="preserve">
     <value>The desktop host prototype is running. Desktop item refresh will be connected in a later phase.</value>
-  </data><data name="SettingsHomeTitle.Text" xml:space="preserve">
+  </data>
+  <data name="SettingsHomeTitle.Text" xml:space="preserve">
     <value>Desktop settings</value>
-  </data><data name="SettingsHomeDescription.Text" xml:space="preserve">
-    <value>Use this window to configure Xiyi Desktop. The desktop uses your current Windows wallpaper and shows icons from your desktop folders; right-click an empty area to open settings.</value>
-  </data><data name="SettingsHomeHostStatus.Title" xml:space="preserve">
+  </data>
+  <data name="SettingsHomeHostStatus.Title" xml:space="preserve">
     <value>Host prototype status</value>
-  </data><data name="SettingsHomeHostStatus.Message" xml:space="preserve">
+  </data>
+  <data name="SettingsHomeHostStatus.Message" xml:space="preserve">
     <value>Phase 2 provides a window-hosting prototype only. The current Windows version and desktop topology still require runtime validation.</value>
-  </data><data name="SettingsHomeOpenDesktop.Content" xml:space="preserve">
+  </data>
+  <data name="SettingsHomeOpenDesktop.Content" xml:space="preserve">
     <value>Show desktop</value>
   </data>
-  <data name="BehaviorNavItem.Content" xml:space="preserve"><value>Behavior</value></data>
-  <data name="BehaviorPageTitle.Text" xml:space="preserve"><value>Behavior</value></data>
-  <data name="BehaviorPageDescription.Text" xml:space="preserve"><value>Manage how the app starts.</value></data>
-  <data name="StartupSettingsCard.Header" xml:space="preserve"><value>Start at sign-in</value></data>
-  <data name="StartupSettingsCard.Description" xml:space="preserve"><value>Start Xiyi Desktop automatically when you sign in to Windows. Windows may ask you to confirm.</value></data>
-  <data name="Behavior_StartupUnavailable" xml:space="preserve"><value>The Windows startup task is currently unavailable.</value></data>
-  <data name="Behavior_StartupUpdateFailed" xml:space="preserve"><value>Couldn't change the startup setting. Try again later.</value></data>
-  <data name="Behavior_StartupDisabledByUser" xml:space="preserve"><value>Windows has disabled this app at startup. Re-enable it under Startup apps in Task Manager.</value></data>
-  <data name="Behavior_StartupDisabledByPolicy" xml:space="preserve"><value>A system policy prevents this app from starting automatically.</value></data>
-  <data name="Behavior_StartupEnabledByPolicy" xml:space="preserve"><value>A system policy requires this app to start automatically.</value></data>
-  <data name="SettingsWidgetsNavItem.Content" xml:space="preserve"><value>Windows Widgets Research</value></data>
-  <data name="WidgetsResearchTitle.Text" xml:space="preserve"><value>Windows Widgets Research</value></data>
-  <data name="WidgetsResearchDescription.Text" xml:space="preserve"><value>Discover installed apps that register Windows widgets and record public API instance-query results.</value></data>
-  <data name="WidgetsResearchBoundaryTitle.Text" xml:space="preserve"><value>Current validation scope</value></data>
-  <data name="WidgetsResearchBoundaryDescription.Text" xml:space="preserve"><value>Catalog discovery uses the public AppExtension API. WidgetManager queries only instances associated with the calling provider; its results do not establish access to other apps' widgets in Widgets Board.</value></data>
-  <data name="WidgetsResearchRefreshButton.Content" xml:space="preserve"><value>Refresh widget catalog</value></data>
-  <data name="WidgetsResearchReadInstancesButton.Content" xml:space="preserve"><value>Read current provider instances</value></data>
-  <data name="WidgetsResearchCatalogHeading.Text" xml:space="preserve"><value>Discovered definitions</value></data>
-  <data name="WidgetsResearchNoDefinitions.Text" xml:space="preserve"><value>No parseable widget definitions were found. See diagnostics below.</value></data>
-  <data name="WidgetsResearchInstancesHeading.Text" xml:space="preserve"><value>WidgetManager instance query</value></data>
-  <data name="WidgetsResearchKnownIdHeading.Text" xml:space="preserve"><value>Probe a known instance ID</value></data>
-  <data name="WidgetsResearchKnownIdDescription.Text" xml:space="preserve"><value>Enter a Widget ID recorded by its own provider. This calls GetWidgetInfo(id) only; it does not enumerate Widgets Board. A null result only means the calling provider has no such instance. It cannot determine whether the ID belongs to another provider or was removed.</value></data>
-  <data name="WidgetsResearchKnownIdTextBox.Header" xml:space="preserve"><value>Widget ID</value></data>
-  <data name="WidgetsResearchKnownIdTextBox.PlaceholderText" xml:space="preserve"><value>Paste a known instance ID</value></data>
-  <data name="WidgetsResearchKnownIdProbeButton.Content" xml:space="preserve"><value>Read only</value></data>
-  <data name="WidgetsResearchDiagnosticsHeading.Text" xml:space="preserve"><value>Scan diagnostics</value></data>
-  <data name="WidgetsResearchLogPath" xml:space="preserve"><value>Experiment log: {0}</value></data>
-  <data name="WidgetsResearchScanning" xml:space="preserve"><value>Scanning. Windows version: {0}</value></data>
-  <data name="WidgetsResearchScanFailed" xml:space="preserve"><value>Catalog scan failed: {0} (HRESULT 0x{1})</value></data>
-  <data name="WidgetsResearchEnvironment" xml:space="preserve"><value>Windows {0} · Last scan: {1}</value></data>
-  <data name="WidgetsResearchCatalogSummary" xml:space="preserve"><value>Found {0} extension/definition records; {1} definitions; {2} diagnostic entries.</value></data>
-  <data name="WidgetsResearchInstancesNotQueried" xml:space="preserve"><value>WidgetManager has not been called. The query is limited to XiyiDesktop's own provider scope.</value></data>
-  <data name="WidgetsResearchInstancesCount" xml:space="preserve"><value>WidgetManager returned {0} instances for the current provider.</value></data>
-  <data name="WidgetsResearchStatusAvailable" xml:space="preserve"><value>Read succeeded: {0} instances for the current provider.</value></data>
-  <data name="WidgetsResearchStatusEmpty" xml:space="preserve"><value>Query succeeded; the current provider returned no instances.</value></data>
-  <data name="WidgetsResearchStatusPartial" xml:space="preserve"><value>Partial read: {0} instances were returned, but some API calls failed.</value></data>
-  <data name="WidgetsResearchStatusUnsupported" xml:space="preserve"><value>WidgetManager is unsupported in this Windows or runtime environment.</value></data>
-  <data name="WidgetsResearchStatusUnavailable" xml:space="preserve"><value>WidgetManager is unavailable; the instance count is unknown.</value></data>
-  <data name="WidgetsResearchStatusFailed" xml:space="preserve"><value>WidgetManager diagnostics failed.</value></data>
-  <data name="WidgetsResearchInstancesEmpty" xml:space="preserve"><value>The current provider has no readable instances. XiyiDesktop has not registered its own widget provider, so this does not mean the system has no pinned widgets.</value></data>
-  <data name="WidgetsResearchInstanceQueryFailed" xml:space="preserve"><value>WidgetManager query failed: {0}: {1} (HRESULT 0x{2})</value></data>
-  <data name="WidgetsResearchNotAvailableOnThisSystem" xml:space="preserve"><value>The query could not complete in this system or app environment. The detailed exception was written to the diagnostic log.</value></data>
-  <data name="WidgetsResearchAppName" xml:space="preserve"><value>Application name</value></data>
-  <data name="WidgetsResearchPackageFamilyName" xml:space="preserve"><value>Package Family Name</value></data>
-  <data name="WidgetsResearchDefinitionId" xml:space="preserve"><value>Definition ID</value></data>
-  <data name="WidgetsResearchExtensionId" xml:space="preserve"><value>Extension ID</value></data>
-  <data name="WidgetsResearchNoDefinitionId" xml:space="preserve"><value>Not parsed</value></data>
-  <data name="WidgetsResearchClsid" xml:space="preserve"><value>Provider CLSID</value></data>
-  <data name="WidgetsResearchName" xml:space="preserve"><value>Widget name</value></data>
-  <data name="WidgetsResearchDescriptionField" xml:space="preserve"><value>Description</value></data>
-  <data name="WidgetsResearchProviderIcons" xml:space="preserve"><value>Provider icon paths</value></data>
-  <data name="WidgetsResearchResources" xml:space="preserve"><value>Icon/preview resource files</value></data>
-  <data name="WidgetsResearchSizes" xml:space="preserve"><value>Supported sizes</value></data>
-  <data name="WidgetsResearchActivation" xml:space="preserve"><value>Activation declaration</value></data>
-  <data name="WidgetsResearchRegistered" xml:space="preserve"><value>Registered</value></data>
-  <data name="WidgetsResearchPinned" xml:space="preserve"><value>Pinned (third-party instance)</value></data>
-  <data name="WidgetsResearchCurrentState" xml:space="preserve"><value>Current state</value></data>
-  <data name="WidgetsResearchTemplate" xml:space="preserve"><value>Template</value></data>
-  <data name="WidgetsResearchData" xml:space="preserve"><value>Data</value></data>
-  <data name="WidgetsResearchCustomState" xml:space="preserve"><value>CustomState</value></data>
-  <data name="WidgetsResearchCompatibility" xml:space="preserve"><value>Compatibility</value></data>
-  <data name="WidgetsResearchYes" xml:space="preserve"><value>Yes</value></data>
-  <data name="WidgetsResearchUnknown" xml:space="preserve"><value>Unknown; the current public query cannot determine this</value></data>
-  <data name="WidgetsResearchUnavailable" xml:space="preserve"><value>Unavailable/not read</value></data>
-  <data name="WidgetsResearchResourceMissing" xml:space="preserve"><value>File not found</value></data>
-  <data name="WidgetsResearchNotRead" xml:space="preserve"><value>Not read (no third-party instance data)</value></data>
-  <data name="WidgetsResearchNotValidated" xml:space="preserve"><value>Not validated</value></data>
-  <data name="WidgetsResearchInstanceId" xml:space="preserve"><value>Instance ID</value></data>
-  <data name="WidgetsResearchSize" xml:space="preserve"><value>Size</value></data>
-  <data name="WidgetsResearchActive" xml:space="preserve"><value>Active</value></data>
-  <data name="WidgetsResearchLastUpdate" xml:space="preserve"><value>Last update</value></data>
-  <data name="WidgetsResearchScope" xml:space="preserve"><value>API scope</value></data>
-  <data name="WidgetsResearchNoDiagnostics" xml:space="preserve"><value>No errors were recorded during this scan.</value></data>
-  <data name="DesktopItemContext_SendTo.Text" xml:space="preserve"><value>Send to</value></data>
-  <data name="DesktopItemContext_Print.Text" xml:space="preserve"><value>Print</value></data>
-  <data name="DesktopItemContext_CreateShortcut.Text" xml:space="preserve"><value>Create shortcut</value></data>
-  <data name="DesktopItemContext_CopyAsPath.Text" xml:space="preserve"><value>Copy file address</value></data>
-  <data name="DesktopItemContext_Share.Text" xml:space="preserve"><value>Share</value></data>
-  <data name="DesktopItemContext_RotateImage.Text" xml:space="preserve"><value>Rotate image</value></data>
-  <data name="DesktopItemContext_RotateLeft.Text" xml:space="preserve"><value>Rotate left</value></data>
-  <data name="DesktopItemContext_RotateRight.Text" xml:space="preserve"><value>Rotate right</value></data>
-  <data name="DesktopItemContext_ShortcutName" xml:space="preserve"><value>{0} - Shortcut.lnk</value></data>
-  <data name="DesktopContext_ShowMoreOptions.Text" xml:space="preserve"><value>Show more options</value></data>
-  <data name="WidgetPickerTitle" xml:space="preserve"><value>Widgets</value></data>
-  <data name="WidgetPickerListHeading.Text" xml:space="preserve"><value>Available widgets</value></data>
-  <data name="WidgetPickerLoading.Content" xml:space="preserve"><value>Loading…</value></data>
-  <data name="WidgetPickerPreviewUnavailable.Text" xml:space="preserve"><value>No preview is available for this widget</value></data>
-  <data name="WidgetPickerSize.Header" xml:space="preserve"><value>Size</value></data>
-  <data name="WidgetPickerSizeButton.Content" xml:space="preserve"><value>Size</value></data>
-  <data name="WidgetPickerSizeLabel" xml:space="preserve"><value>Size</value></data>
-  <data name="WidgetPickerAddButton.Content" xml:space="preserve"><value>Add to desktop</value></data>
-  <data name="WidgetPickerAddLabel" xml:space="preserve"><value>Add to desktop</value></data>
-  <data name="WidgetPickerAdding" xml:space="preserve"><value>Adding…</value></data>
-  <data name="WidgetPickerDesktopFullHint.Text" xml:space="preserve"><value>The desktop is full; this widget can't be added</value></data>
-  <data name="WidgetPickerLoadingStatus.Text" xml:space="preserve"><value>Loading installed widgets…</value></data>
-  <data name="WidgetPickerEmptyCatalog" xml:space="preserve"><value>No available widgets were found.</value></data>
-  <data name="WidgetPickerCatalogUnavailable" xml:space="preserve"><value>The widget catalog is temporarily unavailable. Try again later.</value></data>
-  <data name="WidgetPickerCatalogCount" xml:space="preserve"><value>Found {0} widgets.</value></data>
-  <data name="WidgetPickerSizeSmall" xml:space="preserve"><value>Small</value></data>
-  <data name="WidgetPickerSizeMedium" xml:space="preserve"><value>Medium</value></data>
-  <data name="WidgetPickerSizeLarge" xml:space="preserve"><value>Large</value></data>
-  <data name="DesktopContext_NewWidget.Text" xml:space="preserve"><value>Widgets</value></data>
-  <data name="WidgetPickerAlreadyAdded" xml:space="preserve"><value>This widget has already been added to the desktop</value></data>
-  <data name="WidgetPickerAddFailed" xml:space="preserve"><value>Unable to add this widget. Try again later.</value></data>
-  <data name="WidgetsCardLoading" xml:space="preserve"><value>Loading widget…</value></data>
-  <data name="WidgetsCardUnavailable" xml:space="preserve"><value>This widget is temporarily unavailable</value></data>
-  <data name="WidgetsCardContentTruncated" xml:space="preserve"><value>Some widget content does not fit this size and has been clipped.</value></data>
-  <data name="WidgetsSizeSmall" xml:space="preserve"><value>Small</value></data>
-  <data name="WidgetsSizeMedium" xml:space="preserve"><value>Medium</value></data>
-  <data name="WidgetsSizeLarge" xml:space="preserve"><value>Large</value></data>
-  <data name="WidgetsCustomize" xml:space="preserve"><value>Customize widget</value></data>
-  <data name="WidgetsDelete" xml:space="preserve"><value>Remove from desktop</value></data>
+  <data name="BehaviorNavItem.Content" xml:space="preserve">
+    <value>Behavior</value>
+  </data>
+  <data name="BehaviorPageTitle.Text" xml:space="preserve">
+    <value>Behavior</value>
+  </data>
+  <data name="StartupSettingsCard.Header" xml:space="preserve">
+    <value>Start at sign-in</value>
+  </data>
+  <data name="StartupSettingsCard.Description" xml:space="preserve">
+    <value>Start Xiyi Desktop automatically when you sign in to Windows. Windows may ask you to confirm.</value>
+  </data>
+  <data name="Behavior_StartupUnavailable" xml:space="preserve">
+    <value>The Windows startup task is currently unavailable.</value>
+  </data>
+  <data name="Behavior_StartupUpdateFailed" xml:space="preserve">
+    <value>Couldn't change the startup setting. Try again later.</value>
+  </data>
+  <data name="Behavior_StartupDisabledByUser" xml:space="preserve">
+    <value>Windows has disabled this app at startup. Re-enable it under Startup apps in Task Manager.</value>
+  </data>
+  <data name="Behavior_StartupDisabledByPolicy" xml:space="preserve">
+    <value>A system policy prevents this app from starting automatically.</value>
+  </data>
+  <data name="Behavior_StartupEnabledByPolicy" xml:space="preserve">
+    <value>A system policy requires this app to start automatically.</value>
+  </data>
+  <data name="SettingsWidgetsNavItem.Content" xml:space="preserve">
+    <value>Windows Widgets Research</value>
+  </data>
+  <data name="WidgetsResearchTitle.Text" xml:space="preserve">
+    <value>Windows Widgets Research</value>
+  </data>
+  <data name="WidgetsResearchDescription.Text" xml:space="preserve">
+    <value>Discover installed apps that register Windows widgets and record public API instance-query results.</value>
+  </data>
+  <data name="WidgetsResearchBoundaryTitle.Text" xml:space="preserve">
+    <value>Current validation scope</value>
+  </data>
+  <data name="WidgetsResearchBoundaryDescription.Text" xml:space="preserve">
+    <value>Catalog discovery uses the public AppExtension API. WidgetManager queries only instances associated with the calling provider; its results do not establish access to other apps' widgets in Widgets Board.</value>
+  </data>
+  <data name="WidgetsResearchRefreshButton.Content" xml:space="preserve">
+    <value>Refresh widget catalog</value>
+  </data>
+  <data name="WidgetsResearchReadInstancesButton.Content" xml:space="preserve">
+    <value>Read current provider instances</value>
+  </data>
+  <data name="WidgetsResearchCatalogHeading.Text" xml:space="preserve">
+    <value>Discovered definitions</value>
+  </data>
+  <data name="WidgetsResearchNoDefinitions.Text" xml:space="preserve">
+    <value>No parseable widget definitions were found. See diagnostics below.</value>
+  </data>
+  <data name="WidgetsResearchInstancesHeading.Text" xml:space="preserve">
+    <value>WidgetManager instance query</value>
+  </data>
+  <data name="WidgetsResearchKnownIdHeading.Text" xml:space="preserve">
+    <value>Probe a known instance ID</value>
+  </data>
+  <data name="WidgetsResearchKnownIdDescription.Text" xml:space="preserve">
+    <value>Enter a Widget ID recorded by its own provider. This calls GetWidgetInfo(id) only; it does not enumerate Widgets Board. A null result only means the calling provider has no such instance. It cannot determine whether the ID belongs to another provider or was removed.</value>
+  </data>
+  <data name="WidgetsResearchKnownIdTextBox.Header" xml:space="preserve">
+    <value>Widget ID</value>
+  </data>
+  <data name="WidgetsResearchKnownIdTextBox.PlaceholderText" xml:space="preserve">
+    <value>Paste a known instance ID</value>
+  </data>
+  <data name="WidgetsResearchKnownIdProbeButton.Content" xml:space="preserve">
+    <value>Read only</value>
+  </data>
+  <data name="WidgetsResearchDiagnosticsHeading.Text" xml:space="preserve">
+    <value>Scan diagnostics</value>
+  </data>
+  <data name="WidgetsResearchLogPath" xml:space="preserve">
+    <value>Experiment log: {0}</value>
+  </data>
+  <data name="WidgetsResearchScanning" xml:space="preserve">
+    <value>Scanning. Windows version: {0}</value>
+  </data>
+  <data name="WidgetsResearchScanFailed" xml:space="preserve">
+    <value>Catalog scan failed: {0} (HRESULT 0x{1})</value>
+  </data>
+  <data name="WidgetsResearchEnvironment" xml:space="preserve">
+    <value>Windows {0} · Last scan: {1}</value>
+  </data>
+  <data name="WidgetsResearchCatalogSummary" xml:space="preserve">
+    <value>Found {0} extension/definition records; {1} definitions; {2} diagnostic entries.</value>
+  </data>
+  <data name="WidgetsResearchInstancesNotQueried" xml:space="preserve">
+    <value>WidgetManager has not been called. The query is limited to XiyiDesktop's own provider scope.</value>
+  </data>
+  <data name="WidgetsResearchInstancesCount" xml:space="preserve">
+    <value>WidgetManager returned {0} instances for the current provider.</value>
+  </data>
+  <data name="WidgetsResearchStatusAvailable" xml:space="preserve">
+    <value>Read succeeded: {0} instances for the current provider.</value>
+  </data>
+  <data name="WidgetsResearchStatusEmpty" xml:space="preserve">
+    <value>Query succeeded; the current provider returned no instances.</value>
+  </data>
+  <data name="WidgetsResearchStatusPartial" xml:space="preserve">
+    <value>Partial read: {0} instances were returned, but some API calls failed.</value>
+  </data>
+  <data name="WidgetsResearchStatusUnsupported" xml:space="preserve">
+    <value>WidgetManager is unsupported in this Windows or runtime environment.</value>
+  </data>
+  <data name="WidgetsResearchStatusUnavailable" xml:space="preserve">
+    <value>WidgetManager is unavailable; the instance count is unknown.</value>
+  </data>
+  <data name="WidgetsResearchStatusFailed" xml:space="preserve">
+    <value>WidgetManager diagnostics failed.</value>
+  </data>
+  <data name="WidgetsResearchInstancesEmpty" xml:space="preserve">
+    <value>The current provider has no readable instances. XiyiDesktop has not registered its own widget provider, so this does not mean the system has no pinned widgets.</value>
+  </data>
+  <data name="WidgetsResearchInstanceQueryFailed" xml:space="preserve">
+    <value>WidgetManager query failed: {0}: {1} (HRESULT 0x{2})</value>
+  </data>
+  <data name="WidgetsResearchNotAvailableOnThisSystem" xml:space="preserve">
+    <value>The query could not complete in this system or app environment. The detailed exception was written to the diagnostic log.</value>
+  </data>
+  <data name="WidgetsResearchAppName" xml:space="preserve">
+    <value>Application name</value>
+  </data>
+  <data name="WidgetsResearchPackageFamilyName" xml:space="preserve">
+    <value>Package Family Name</value>
+  </data>
+  <data name="WidgetsResearchDefinitionId" xml:space="preserve">
+    <value>Definition ID</value>
+  </data>
+  <data name="WidgetsResearchExtensionId" xml:space="preserve">
+    <value>Extension ID</value>
+  </data>
+  <data name="WidgetsResearchNoDefinitionId" xml:space="preserve">
+    <value>Not parsed</value>
+  </data>
+  <data name="WidgetsResearchClsid" xml:space="preserve">
+    <value>Provider CLSID</value>
+  </data>
+  <data name="WidgetsResearchName" xml:space="preserve">
+    <value>Widget name</value>
+  </data>
+  <data name="WidgetsResearchDescriptionField" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="WidgetsResearchProviderIcons" xml:space="preserve">
+    <value>Provider icon paths</value>
+  </data>
+  <data name="WidgetsResearchResources" xml:space="preserve">
+    <value>Icon/preview resource files</value>
+  </data>
+  <data name="WidgetsResearchSizes" xml:space="preserve">
+    <value>Supported sizes</value>
+  </data>
+  <data name="WidgetsResearchActivation" xml:space="preserve">
+    <value>Activation declaration</value>
+  </data>
+  <data name="WidgetsResearchRegistered" xml:space="preserve">
+    <value>Registered</value>
+  </data>
+  <data name="WidgetsResearchPinned" xml:space="preserve">
+    <value>Pinned (third-party instance)</value>
+  </data>
+  <data name="WidgetsResearchCurrentState" xml:space="preserve">
+    <value>Current state</value>
+  </data>
+  <data name="WidgetsResearchTemplate" xml:space="preserve">
+    <value>Template</value>
+  </data>
+  <data name="WidgetsResearchData" xml:space="preserve">
+    <value>Data</value>
+  </data>
+  <data name="WidgetsResearchCustomState" xml:space="preserve">
+    <value>CustomState</value>
+  </data>
+  <data name="WidgetsResearchCompatibility" xml:space="preserve">
+    <value>Compatibility</value>
+  </data>
+  <data name="WidgetsResearchYes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="WidgetsResearchUnknown" xml:space="preserve">
+    <value>Unknown; the current public query cannot determine this</value>
+  </data>
+  <data name="WidgetsResearchUnavailable" xml:space="preserve">
+    <value>Unavailable/not read</value>
+  </data>
+  <data name="WidgetsResearchResourceMissing" xml:space="preserve">
+    <value>File not found</value>
+  </data>
+  <data name="WidgetsResearchNotRead" xml:space="preserve">
+    <value>Not read (no third-party instance data)</value>
+  </data>
+  <data name="WidgetsResearchNotValidated" xml:space="preserve">
+    <value>Not validated</value>
+  </data>
+  <data name="WidgetsResearchInstanceId" xml:space="preserve">
+    <value>Instance ID</value>
+  </data>
+  <data name="WidgetsResearchSize" xml:space="preserve">
+    <value>Size</value>
+  </data>
+  <data name="WidgetsResearchActive" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="WidgetsResearchLastUpdate" xml:space="preserve">
+    <value>Last update</value>
+  </data>
+  <data name="WidgetsResearchScope" xml:space="preserve">
+    <value>API scope</value>
+  </data>
+  <data name="WidgetsResearchNoDiagnostics" xml:space="preserve">
+    <value>No errors were recorded during this scan.</value>
+  </data>
+  <data name="DesktopItemContext_SendTo.Text" xml:space="preserve">
+    <value>Send to</value>
+  </data>
+  <data name="DesktopItemContext_Print.Text" xml:space="preserve">
+    <value>Print</value>
+  </data>
+  <data name="DesktopItemContext_CreateShortcut.Text" xml:space="preserve">
+    <value>Create shortcut</value>
+  </data>
+  <data name="DesktopItemContext_CopyAsPath.Text" xml:space="preserve">
+    <value>Copy file address</value>
+  </data>
+  <data name="DesktopItemContext_Share.Text" xml:space="preserve">
+    <value>Share</value>
+  </data>
+  <data name="DesktopItemContext_RotateImage.Text" xml:space="preserve">
+    <value>Rotate image</value>
+  </data>
+  <data name="DesktopItemContext_RotateLeft.Text" xml:space="preserve">
+    <value>Rotate left</value>
+  </data>
+  <data name="DesktopItemContext_RotateRight.Text" xml:space="preserve">
+    <value>Rotate right</value>
+  </data>
+  <data name="DesktopItemContext_ShortcutName" xml:space="preserve">
+    <value>{0} - Shortcut.lnk</value>
+  </data>
+  <data name="DesktopContext_ShowMoreOptions.Text" xml:space="preserve">
+    <value>Show more options</value>
+  </data>
+  <data name="WidgetPickerTitle" xml:space="preserve">
+    <value>Widgets</value>
+  </data>
+  <data name="WidgetPickerListHeading.Text" xml:space="preserve">
+    <value>Available widgets</value>
+  </data>
+  <data name="WidgetPickerLoading.Content" xml:space="preserve">
+    <value>Loading…</value>
+  </data>
+  <data name="WidgetPickerPreviewUnavailable.Text" xml:space="preserve">
+    <value>No preview is available for this widget</value>
+  </data>
+  <data name="WidgetPickerSizeLabel.Text" xml:space="preserve">
+    <value>Size</value>
+  </data>
+  <data name="WidgetPickerAddButton.Content" xml:space="preserve">
+    <value>Add to desktop</value>
+  </data>
+  <data name="WidgetPickerAddLabel" xml:space="preserve">
+    <value>Add to desktop</value>
+  </data>
+  <data name="WidgetPickerAdding" xml:space="preserve">
+    <value>Adding…</value>
+  </data>
+  <data name="WidgetPickerDesktopFullHint.Text" xml:space="preserve">
+    <value>The desktop is full; this widget can't be added</value>
+  </data>
+  <data name="WidgetPickerEmptyCatalog" xml:space="preserve">
+    <value>No available widgets were found.</value>
+  </data>
+  <data name="WidgetPickerCatalogUnavailable" xml:space="preserve">
+    <value>The widget catalog is temporarily unavailable. Try again later.</value>
+  </data>
+  <data name="WidgetPickerSizeSmall" xml:space="preserve">
+    <value>Small</value>
+  </data>
+  <data name="WidgetPickerSizeMedium" xml:space="preserve">
+    <value>Medium</value>
+  </data>
+  <data name="WidgetPickerSizeLarge" xml:space="preserve">
+    <value>Large</value>
+  </data>
+  <data name="DesktopContext_NewWidget.Text" xml:space="preserve">
+    <value>Widgets</value>
+  </data>
+  <data name="WidgetPickerAlreadyAdded" xml:space="preserve">
+    <value>Widget added</value>
+  </data>
+  <data name="WidgetPickerAddFailed" xml:space="preserve">
+    <value>Unable to add this widget. Try again later.</value>
+  </data>
+  <data name="WidgetsCardLoading" xml:space="preserve">
+    <value>Loading widget…</value>
+  </data>
+  <data name="WidgetsCardUnavailable" xml:space="preserve">
+    <value>This widget is temporarily unavailable</value>
+  </data>
+  <data name="WidgetsCardContentTruncated" xml:space="preserve">
+    <value>Some widget content does not fit this size and has been clipped.</value>
+  </data>
+  <data name="WidgetsSizeSmall" xml:space="preserve">
+    <value>Small</value>
+  </data>
+  <data name="WidgetsSizeMedium" xml:space="preserve">
+    <value>Medium</value>
+  </data>
+  <data name="WidgetsSizeLarge" xml:space="preserve">
+    <value>Large</value>
+  </data>
+  <data name="WidgetsCustomize" xml:space="preserve">
+    <value>Customize widget</value>
+  </data>
+  <data name="WidgetsDelete" xml:space="preserve">
+    <value>Remove from desktop</value>
+  </data>
+  <data name="SMTCWidgetProviderName" xml:space="preserve">
+    <value>Xiyi Media Control</value>
+  </data>
+  <data name="SMTCWidgetDefinitionName" xml:space="preserve">
+    <value>Media control</value>
+  </data>
+  <data name="SMTCWidgetDefinitionDescription" xml:space="preserve">
+    <value>Control media sessions exposed by other apps.</value>
+  </data>
+  <data name="SMTC_NoMedia" xml:space="preserve">
+    <value>No media is playing</value>
+  </data>
+  <data name="SMTC_NoSession" xml:space="preserve">
+    <value>No media session is available</value>
+  </data>
+  <data name="SMTC_PositionFormat" xml:space="preserve">
+    <value>{0} / {1}</value>
+  </data>
+  <data name="SMTC_Previous" xml:space="preserve">
+    <value>Previous</value>
+  </data>
+  <data name="SMTC_Next" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="SMTC_Play" xml:space="preserve">
+    <value>Play</value>
+  </data>
+  <data name="SMTC_Pause" xml:space="preserve">
+    <value>Pause</value>
+  </data>
+  <data name="SMTC_SeekBack" xml:space="preserve">
+    <value>Back 15 seconds</value>
+  </data>
+  <data name="SMTC_SeekForward" xml:space="preserve">
+    <value>Forward 15 seconds</value>
+  </data>
 </root>

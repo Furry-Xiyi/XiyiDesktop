@@ -8,9 +8,6 @@
             <TextBlock x:Uid="AboutPageTitle"
                        FontSize="28"
                        FontWeight="SemiBold"/>
-            <TextBlock x:Uid="AboutPageDescription"
-                       TextWrapping="Wrap"
-                       Opacity="0.78"/>
 
             <Expander IsExpanded="True"
                       HorizontalAlignment="Stretch"

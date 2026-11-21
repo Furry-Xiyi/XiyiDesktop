@@ -18,7 +18,9 @@ internal sealed record WidgetDesktopPlacement(
     string? LightIconPath = null,
     string? DarkIconPath = null,
     string? DefaultIconPath = null,
-    int CoordinateSpaceVersion = 0);
+    int CoordinateSpaceVersion = 0,
+    double ViewportWidth = 0,
+    double ViewportHeight = 0);
 
 internal sealed class WidgetPlacementStore
 {

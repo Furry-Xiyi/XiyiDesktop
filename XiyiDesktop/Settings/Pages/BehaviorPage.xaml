@@ -9,9 +9,6 @@
             <TextBlock x:Uid="BehaviorPageTitle"
                        FontSize="28"
                        FontWeight="SemiBold"/>
-            <TextBlock x:Uid="BehaviorPageDescription"
-                       TextWrapping="Wrap"
-                       Opacity="0.78"/>
 
             <muxc:SettingsCard x:Uid="StartupSettingsCard"
                                    HorizontalAlignment="Stretch"

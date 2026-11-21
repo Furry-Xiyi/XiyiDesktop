@@ -5,16 +5,17 @@
   xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
   xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3"
+  xmlns:com="http://schemas.microsoft.com/appx/manifest/com/windows10"
   xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
   xmlns:desktop6="http://schemas.microsoft.com/appx/manifest/desktop/windows10/6"
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
   xmlns:systemai="http://schemas.microsoft.com/appx/manifest/systemai/windows10"
-  IgnorableNamespaces="uap uap3 desktop desktop6 rescap systemai">
+  IgnorableNamespaces="uap uap3 com desktop desktop6 rescap systemai">
 
   <Identity
     Name="28AE62C8.FurryXiyi.XiyiDesktop"
     Publisher="CN=Furry_Xiyi"
-    Version="2026.1122.1.0" />
+    Version="2026.1126.4.0" />
 
   <mp:PhoneIdentity PhoneProductId="52a58b31-5eac-47ee-901d-ec38545aac02" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
@@ -48,10 +49,69 @@
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
       </uap:VisualElements>
       <Extensions>
+        <com:Extension Category="windows.comServer">
+          <com:ComServer>
+            <com:ExeServer Executable="XiyiDesktop.exe" DisplayName="Xiyi Desktop SMTC Widget">
+              <com:Class Id="4E5FEE0F-4F48-4C5D-9E74-3A3D9D5E2D4C" DisplayName="Xiyi Desktop SMTC Widget" />
+            </com:ExeServer>
+          </com:ComServer>
+        </com:Extension>
         <uap3:Extension Category="windows.appExtensionHost">
           <uap3:AppExtensionHost>
             <uap3:Name>com.microsoft.windows.widgets</uap3:Name>
           </uap3:AppExtensionHost>
+        </uap3:Extension>
+        <uap3:Extension Category="windows.appExtension">
+          <uap3:AppExtension Name="com.microsoft.windows.widgets"
+                            DisplayName="ms-resource:SMTCWidgetProviderName"
+                            Id="XiyiSmtcWidgetProvider"
+                            PublicFolder="Assets\SMTCWidget">
+            <uap3:Properties>
+              <WidgetProvider>
+                <ProviderIcons>
+                  <Icon Path="Assets\SMTCWidget\SMTCWidget.png" />
+                </ProviderIcons>
+                <Activation>
+                  <CreateInstance ClassId="4E5FEE0F-4F48-4C5D-9E74-3A3D9D5E2D4C" />
+                </Activation>
+                <Definitions>
+                  <Definition Id="SmtcMediaControl"
+                              DisplayName="ms-resource:SMTCWidgetDefinitionName"
+                              Description="ms-resource:SMTCWidgetDefinitionDescription"
+                              AllowMultiple="true">
+                    <Capabilities>
+                      <Capability><Size Name="small" /></Capability>
+                      <Capability><Size Name="medium" /></Capability>
+                    </Capabilities>
+                    <ThemeResources>
+                      <Icons>
+                        <Icon Path="Assets\SMTCWidget\SMTCWidget.png" />
+                      </Icons>
+                      <Screenshots>
+                        <Screenshot Path="Assets\SMTCWidget\Light\SMTCWidget-Screenshot.png" DisplayAltText="ms-resource:SMTCWidgetDefinitionName" />
+                      </Screenshots>
+                      <DarkMode>
+                        <Icons>
+                          <Icon Path="Assets\SMTCWidget\SMTCWidget.png" />
+                        </Icons>
+                        <Screenshots>
+                          <Screenshot Path="Assets\SMTCWidget\Dark\SMTCWidget-Screenshot.png" DisplayAltText="ms-resource:SMTCWidgetDefinitionName" />
+                        </Screenshots>
+                      </DarkMode>
+                      <LightMode>
+                        <Icons>
+                          <Icon Path="Assets\SMTCWidget\SMTCWidget.png" />
+                        </Icons>
+                        <Screenshots>
+                          <Screenshot Path="Assets\SMTCWidget\Light\SMTCWidget-Screenshot.png" DisplayAltText="ms-resource:SMTCWidgetDefinitionName" />
+                        </Screenshots>
+                      </LightMode>
+                    </ThemeResources>
+                  </Definition>
+                </Definitions>
+              </WidgetProvider>
+            </uap3:Properties>
+          </uap3:AppExtension>
         </uap3:Extension>
         <desktop:Extension Category="windows.startupTask" Executable="XiyiDesktop.exe" EntryPoint="Windows.FullTrustApplication">
           <desktop:StartupTask TaskId="XiyiDesktopStartupTask" Enabled="true" DisplayName="ms-resource:AppDisplayName" />

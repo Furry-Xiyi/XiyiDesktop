@@ -1,6 +1,7 @@
 using AdaptiveCards.ObjectModel.WinUI3;
 using AdaptiveCards.Rendering.WinUI3;
 using AdaptiveCards.Templating;
+using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -42,12 +43,15 @@ public sealed partial class WidgetCardControl : UserControl
     private readonly string _defaultTitle;
     private RenderedAdaptiveCard? _renderedCard;
     private bool _disposed;
+    private int _widgetUpdatePending;
+    private int _widgetUpdateScheduled;
     private WidgetSize _size;
     private string? _activeWebContentUrl;
     private CancellationTokenSource? _pollCancellation;
     private string? _lastRenderedTemplate;
     private string? _lastRenderedData;
     private bool _providerHeaderVisible = true;
+    private bool _smtcCircularActionButtons;
     private bool _fullBleedBackgroundActive;
     private string? _providerIconPath;
     private double _textScaleFactor = 1.0;
@@ -61,6 +65,8 @@ public sealed partial class WidgetCardControl : UserControl
         IReadOnlyList<WidgetSize>? supportedSizes = null)
     {
         InitializeComponent();
+        UpdateCornerRadius(XiyiDesktop.AppSettingsStore.DesktopCornerRadius);
+        UpdateBackgroundMaterial(AppThemeManager.CurrentMaterial);
         _instance = instance ?? throw new ArgumentNullException(nameof(instance));
         _size = size;
         _supportedSizes = supportedSizes is { Count: > 0 }
@@ -78,19 +84,38 @@ public sealed partial class WidgetCardControl : UserControl
 
     /// <summary>Header surface to which the desktop attaches its position drag behavior.</summary>
     public FrameworkElement DragHandle => HeaderGrid;
+
+    internal void UpdateBackgroundMaterial(XiyiDesktop.BackgroundMaterial material)
+    {
+        CardBackdrop.SystemBackdrop = material switch
+        {
+            XiyiDesktop.BackgroundMaterial.MicaAlt => new MicaBackdrop { Kind = MicaKind.BaseAlt },
+            XiyiDesktop.BackgroundMaterial.Acrylic => new DesktopAcrylicBackdrop(),
+            _ => new MicaBackdrop { Kind = MicaKind.Base }
+        };
+    }
+
+    internal void UpdateCornerRadius(double radius)
+    {
+        radius = double.IsFinite(radius) ? Math.Clamp(radius, 0, 32) : 8;
+        var cornerRadius = new CornerRadius(radius);
+        CardBackdrop.CornerRadius = cornerRadius;
+        CardBorder.CornerRadius = cornerRadius;
+    }
+
     internal Uri? ActiveWebContentUri => Uri.TryCreate(_activeWebContentUrl, UriKind.Absolute, out var uri) ? uri : null;
     internal SafeWidgetInstance Instance => _instance;
     public WidgetSize Size => _size;
     internal double ScaledWidth => GetLayoutWidth() * _desktopScaleX;
     internal double ScaledHeight => GetLayoutHeight() * _desktopScaleY;
     internal double DesktopScale => Math.Min(_desktopScaleX, _desktopScaleY);
-    internal static int GetGridColumnSpan(WidgetSize size) => 2;
+    internal static int GetGridColumnSpan(WidgetSize size) => 3;
     internal static int GetGridRowSpan(WidgetSize size) => size switch
     {
-        WidgetSize.Small => 1,
-        WidgetSize.Medium => 2,
-        WidgetSize.Large => 3,
-        _ => 2
+        WidgetSize.Small => 2,
+        WidgetSize.Medium => 3,
+        WidgetSize.Large => 4,
+        _ => 3
     };
     public event Action<WidgetSize>? SizeChangedByUser;
     public event EventHandler? DeleteRequested;
@@ -167,7 +192,7 @@ public sealed partial class WidgetCardControl : UserControl
         if (_disposed)
             return;
 
-        ShowStatus(true, Get("WidgetsCardLoading"));
+        ShowLoadingStatus();
         try
         {
             if (!await _instance.PopulateAsync())
@@ -180,6 +205,12 @@ public sealed partial class WidgetCardControl : UserControl
             System.Diagnostics.Debug.WriteLine($"Widget card loading failed: {exception}");
             ShowStatus(false, Get("WidgetsCardUnavailable"));
         }
+    }
+
+    internal void ShowLoadingStatus()
+    {
+        if (!_disposed)
+            ShowStatus(true, Get("WidgetsCardLoading"));
     }
 
     public async Task<bool> ChangeSizeAsync(WidgetSize size)
@@ -241,8 +272,36 @@ public sealed partial class WidgetCardControl : UserControl
 
     private void Instance_WidgetUpdated(SafeWidgetInstance sender, Microsoft.Windows.Widgets.Hosts.WidgetUpdatedEventArgs args)
     {
-        if (!_disposed)
-            _dispatcherQueue.TryEnqueue(async () => await RenderWithReadinessRetriesAsync());
+        if (_disposed)
+            return;
+
+        Interlocked.Exchange(ref _widgetUpdatePending, 1);
+        ScheduleWidgetUpdateRender();
+    }
+
+    private void ScheduleWidgetUpdateRender()
+    {
+        if (_disposed || Interlocked.CompareExchange(ref _widgetUpdateScheduled, 1, 0) != 0)
+            return;
+
+        if (!_dispatcherQueue.TryEnqueue(async () =>
+        {
+            try
+            {
+                Interlocked.Exchange(ref _widgetUpdatePending, 0);
+                if (!_disposed)
+                    await RenderWithReadinessRetriesAsync();
+            }
+            finally
+            {
+                Interlocked.Exchange(ref _widgetUpdateScheduled, 0);
+                if (!_disposed && Volatile.Read(ref _widgetUpdatePending) != 0)
+                    ScheduleWidgetUpdateRender();
+            }
+        }))
+        {
+            Interlocked.Exchange(ref _widgetUpdateScheduled, 0);
+        }
     }
 
     private async void WidgetCardControl_ActualThemeChanged(FrameworkElement sender, object args)
@@ -383,6 +442,7 @@ public sealed partial class WidgetCardControl : UserControl
         }
 
         await ApplyProviderHeaderAsync(expanded, data);
+        expanded = RemovePromotedTrackInfoFromBody(expanded);
         // Header visibility and custom text affect its measured overlay height.
         // Measure after applying the expanded Provider header, as the probe does.
         HeaderGrid.UpdateLayout();
@@ -425,39 +485,54 @@ public sealed partial class WidgetCardControl : UserControl
 
         var geometryScale = 1.0;
         var typographyScale = 1.0;
-        double naturalHeight = 0;
-        for (var attempt = 0; attempt < 9; attempt++)
+        double naturalHeight = double.NaN;
+        if (!_smtcCircularActionButtons)
         {
-            var candidateCard = ScaleAdaptiveCardDensity(rendererSource, geometryScale, typographyScale);
-            var candidateHost = ScaleAdaptiveHostConfig(hostConfigJson, geometryScale, typographyScale);
-            naturalHeight = MeasureAdaptiveCardNaturalHeight(candidateCard, candidateHost, bodyWidth);
-            if (!double.IsFinite(naturalHeight) || naturalHeight <= 0 || naturalHeight <= availableBodyHeight * 0.98)
-                break;
+            for (var attempt = 0; attempt < 9; attempt++)
+            {
+                var candidateCard = ScaleAdaptiveCardDensity(rendererSource, geometryScale, typographyScale);
+                var candidateHost = ScaleAdaptiveHostConfig(hostConfigJson, geometryScale, typographyScale);
+                naturalHeight = MeasureAdaptiveCardNaturalHeight(candidateCard, candidateHost, bodyWidth);
+                if (!double.IsFinite(naturalHeight) || naturalHeight <= 0 || naturalHeight <= availableBodyHeight * 0.98)
+                    break;
 
-            var shrink = Math.Clamp((availableBodyHeight / naturalHeight) * 0.94, 0.65, 0.9);
-            if (geometryScale > 0.5001)
-                geometryScale = Math.Max(0.5, geometryScale * shrink);
-            else if (typographyScale > 0.7001)
-                typographyScale = Math.Max(0.7, typographyScale * shrink);
-            else
-                break;
+                var shrink = Math.Clamp((availableBodyHeight / naturalHeight) * 0.94, 0.65, 0.9);
+                if (geometryScale > 0.5001)
+                    geometryScale = Math.Max(0.5, geometryScale * shrink);
+                else if (typographyScale > 0.7001)
+                    typographyScale = Math.Max(0.7, typographyScale * shrink);
+                else
+                    break;
+            }
         }
 
-        var finalCard = ScaleAdaptiveCardDensity(rendererSource, geometryScale, typographyScale);
-        var finalHost = ScaleAdaptiveHostConfig(hostConfigJson, geometryScale, typographyScale);
-        if (double.IsFinite(naturalHeight))
+        var finalCard = _smtcCircularActionButtons
+            ? rendererSource
+            : ScaleAdaptiveCardDensity(rendererSource, geometryScale, typographyScale);
+        var finalHost = _smtcCircularActionButtons
+            ? hostConfigJson
+            : ScaleAdaptiveHostConfig(hostConfigJson, geometryScale, typographyScale);
+        if (!_smtcCircularActionButtons && double.IsFinite(naturalHeight))
             naturalHeight = MeasureAdaptiveCardNaturalHeight(finalCard, finalHost, bodyWidth);
         var cardTopPadding = GetAdaptiveCardTopPadding(finalHost);
         finalCard = ApplyFloatingHeaderAvoidance(finalCard, headerAvoidanceHeight, cardTopPadding);
         var parsed = AdaptiveCard.FromJsonString(finalCard, _elementParser, _actionParser);
         if (parsed?.AdaptiveCard is null)
-            throw new InvalidDataException(Get("WidgetsCardUnavailable"));
+        {
+            System.Diagnostics.Debug.WriteLine("Adaptive Card parsing failed; showing the unavailable state instead of throwing.");
+            ShowStatus(false, Get("WidgetsCardUnavailable"));
+            return;
+        }
 
         var renderer = CreateAdaptiveCardRenderer(finalHost);
         renderer.SetFixedDimensions(checked((uint)Math.Ceiling(bodyWidth)), checked((uint)Math.Ceiling(fullCardHeight)));
         var rendered = renderer.RenderAdaptiveCard(parsed.AdaptiveCard);
         if (rendered?.FrameworkElement is null)
-            throw new InvalidOperationException(Get("WidgetsCardUnavailable"));
+        {
+            System.Diagnostics.Debug.WriteLine("Adaptive Card rendering produced no visual element.");
+            ShowStatus(false, Get("WidgetsCardUnavailable"));
+            return;
+        }
         if (_renderedCard is not null)
             _renderedCard.Action -= Rendered_Action;
         _renderedCard = rendered;
@@ -664,6 +739,7 @@ public sealed partial class WidgetCardControl : UserControl
 
     private async Task ApplyProviderHeaderAsync(string expandedJson, string dataJson)
     {
+        _smtcCircularActionButtons = false;
         try
         {
             using var document = JsonDocument.Parse(expandedJson);
@@ -712,8 +788,13 @@ public sealed partial class WidgetCardControl : UserControl
             TitleText.Text = _defaultTitle;
             if (header.ValueKind == JsonValueKind.String)
                 TitleText.Text = header.GetString() ?? TitleText.Text;
-            else if (header.ValueKind == JsonValueKind.Object && header.TryGetProperty("text", out var text) && text.ValueKind == JsonValueKind.String)
-                TitleText.Text = text.GetString() ?? TitleText.Text;
+            else if (header.ValueKind == JsonValueKind.Object)
+            {
+                if (header.TryGetProperty("text", out var text) && text.ValueKind == JsonValueKind.String)
+                    TitleText.Text = text.GetString() ?? TitleText.Text;
+                _smtcCircularActionButtons = header.TryGetProperty("smtcCircularActions", out var circularActions) &&
+                    circularActions.ValueKind == JsonValueKind.True;
+            }
 
             var iconUrl = TryGetHeaderProperty(expandedJson, "iconUrl") ?? TryGetStringProperty(dataJson, "imageUrl");
             if (string.IsNullOrWhiteSpace(iconUrl) || !await SetProviderIconFromUriAsync(iconUrl))
@@ -728,6 +809,35 @@ public sealed partial class WidgetCardControl : UserControl
             TitleText.Visibility = Visibility.Visible;
             MenuButton.Visibility = Visibility.Visible;
             TitleText.Text = _defaultTitle;
+        }
+    }
+
+    private static string RemovePromotedTrackInfoFromBody(string cardJson)
+    {
+        try
+        {
+            if (JsonNode.Parse(cardJson) is not JsonObject card ||
+                card["header"] is not JsonObject header ||
+                header["moveTitleToHeader"]?.GetValueKind() != JsonValueKind.True ||
+                header["promotedBodyTextBlocks"]?.GetValueKind() != JsonValueKind.Number ||
+                card["body"] is not JsonArray body ||
+                body.FirstOrDefault() is not JsonObject container ||
+                container["items"] is not JsonArray items)
+            {
+                return cardJson;
+            }
+
+            var promotedTextBlockCount = header["promotedBodyTextBlocks"]!.GetValue<int>();
+            for (var index = 0; index < promotedTextBlockCount && items.FirstOrDefault() is JsonObject textBlock &&
+                 string.Equals(textBlock["type"]?.GetValue<string>(), "TextBlock", StringComparison.Ordinal); index++)
+            {
+                items.RemoveAt(0);
+            }
+            return card.ToJsonString();
+        }
+        catch (Exception exception) when (exception is JsonException or InvalidOperationException)
+        {
+            return cardJson;
         }
     }
 
@@ -834,6 +944,13 @@ public sealed partial class WidgetCardControl : UserControl
             overrides["Adaptive.Action.Default"] = defaultStyle;
             overrides["Adaptive.Action.Negative"] = defaultStyle;
             overrides["Adaptive.Action.Destructive"] = defaultStyle;
+        }
+        if (_smtcCircularActionButtons &&
+            Application.Current.Resources.TryGetValue("SmtcCircularWidgetActionButtonStyle", out var circularStyle) &&
+            circularStyle is Style)
+        {
+            overrides["Adaptive.Action"] = circularStyle;
+            overrides["Adaptive.Action.Default"] = circularStyle;
         }
         if (Application.Current.Resources.TryGetValue("SubtleButtonStyle", out var subtleStyle) && subtleStyle is Style)
             overrides["Adaptive.Action.Subtle"] = subtleStyle;
@@ -1112,11 +1229,17 @@ public sealed partial class WidgetCardControl : UserControl
     {
         var parsed = AdaptiveCard.FromJsonString(cardJson, _elementParser, _actionParser);
         if (parsed?.AdaptiveCard is null)
-            throw new InvalidDataException(Get("WidgetsCardUnavailable"));
+        {
+            System.Diagnostics.Debug.WriteLine("Adaptive Card natural-height measurement skipped because parsing failed.");
+            return double.NaN;
+        }
 
         var rendered = CreateAdaptiveCardRenderer(hostConfigJson).RenderAdaptiveCard(parsed.AdaptiveCard);
         if (rendered?.FrameworkElement is not FrameworkElement root)
-            throw new InvalidDataException(Get("WidgetsCardUnavailable"));
+        {
+            System.Diagnostics.Debug.WriteLine("Adaptive Card natural-height measurement skipped because rendering returned no element.");
+            return double.NaN;
+        }
 
         root.Width = availableWidth;
         root.Height = double.NaN;
@@ -1198,16 +1321,14 @@ public sealed partial class WidgetCardControl : UserControl
 
     private static bool TryGetString(JsonValue value, out string text)
     {
-        try
+        if (value.GetValueKind() == JsonValueKind.String)
         {
             text = value.GetValue<string>();
             return true;
         }
-        catch (InvalidOperationException)
-        {
-            text = string.Empty;
-            return false;
-        }
+
+        text = string.Empty;
+        return false;
     }
 
     private static string? ScaleNamedSpacing(string spacing, double scale)
@@ -1234,11 +1355,7 @@ public sealed partial class WidgetCardControl : UserControl
     private static bool TryScaleDimensionValue(JsonValue value, double scale, out string scaledValue)
     {
         scaledValue = string.Empty;
-        string? text;
-        try { text = value.GetValue<string>(); }
-        catch (InvalidOperationException) { text = null; }
-
-        if (text is null)
+        if (!TryGetString(value, out var text))
         {
             if (!TryGetJsonNumber(value, out var numericPixels) || numericPixels <= 0)
                 return false;
@@ -1304,24 +1421,13 @@ public sealed partial class WidgetCardControl : UserControl
 
     private static bool TryGetJsonNumber(JsonValue value, out double number)
     {
-        try
-        {
-            number = value.GetValue<double>();
-            return double.IsFinite(number);
-        }
-        catch (InvalidOperationException)
-        {
-            try
-            {
-                number = value.GetValue<int>();
-                return true;
-            }
-            catch (InvalidOperationException)
-            {
-                number = 0;
-                return false;
-            }
-        }
+        if (value.GetValueKind() == JsonValueKind.Number &&
+            double.TryParse(value.ToJsonString(), NumberStyles.Float, CultureInfo.InvariantCulture, out number) &&
+            double.IsFinite(number))
+            return true;
+
+        number = 0;
+        return false;
     }
 
     private static string ApplyFloatingHeaderAvoidance(string cardJson, double topInset, double existingTopPadding)
