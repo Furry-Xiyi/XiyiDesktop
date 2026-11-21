@@ -1,0 +1,54 @@
+<Window
+    x:Class="XiyiDesktop.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:muxc="using:CommunityToolkit.WinUI.Controls">
+
+    <Grid>
+        <Grid x:Name="WindowTitleBar" Height="32" VerticalAlignment="Top">
+            <muxc:TitleBar x:Name="TitleBarArea"
+                               Height="32"
+                               Background="Transparent"
+                               DisplayMode="Standard"
+                               AutoConfigureCustomTitleBar="True" />
+        </Grid>
+
+        <Grid Margin="0,32,0,0">
+            <NavigationView x:Name="NavView"
+                            PaneDisplayMode="Top"
+                            IsSettingsVisible="False"
+                            IsBackButtonVisible="Collapsed"
+                            ItemInvoked="NavView_ItemInvoked">
+                <NavigationView.MenuItems>
+                    <NavigationViewItem x:Uid="SettingsHomeNavItem" Tag="overview">
+                        <NavigationViewItem.Icon>
+                            <FontIcon Glyph="&#xE80F;"/>
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
+                    <NavigationViewItem x:Uid="AppearanceNavItem" Tag="appearance">
+                        <NavigationViewItem.Icon>
+                            <FontIcon Glyph="&#xE790;"/>
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
+                    <NavigationViewItem x:Uid="InteractionNavItem" Tag="interaction">
+                        <NavigationViewItem.Icon>
+                            <FontIcon Glyph="&#xF271;"/>
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
+                    <NavigationViewItem x:Uid="BehaviorNavItem" Tag="behavior">
+                        <NavigationViewItem.Icon>
+                            <FontIcon Glyph="&#xE835;"/>
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
+                    <NavigationViewItem x:Uid="AboutNavItem" Tag="about">
+                        <NavigationViewItem.Icon>
+                            <FontIcon Glyph="&#xE946;"/>
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
+                </NavigationView.MenuItems>
+                <Frame x:Name="ContentFrame"/>
+            </NavigationView>
+        </Grid>
+
+    </Grid>
+</Window>

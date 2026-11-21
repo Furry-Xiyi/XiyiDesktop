@@ -1,0 +1,34 @@
+<Page
+    x:Class="XiyiDesktop.Pages.BehaviorPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:muxc="using:CommunityToolkit.WinUI.Controls">
+
+    <ScrollViewer Padding="24" HorizontalContentAlignment="Stretch">
+        <StackPanel Spacing="20" HorizontalAlignment="Stretch">
+            <TextBlock x:Uid="BehaviorPageTitle"
+                       FontSize="28"
+                       FontWeight="SemiBold"/>
+            <TextBlock x:Uid="BehaviorPageDescription"
+                       TextWrapping="Wrap"
+                       Opacity="0.78"/>
+
+            <muxc:SettingsCard x:Uid="StartupSettingsCard"
+                                   HorizontalAlignment="Stretch"
+                                   HorizontalContentAlignment="Stretch"
+                                   Padding="16,10">
+                <muxc:SettingsCard.HeaderIcon>
+                    <FontIcon Glyph="&#xF42F;"/>
+                </muxc:SettingsCard.HeaderIcon>
+                <ToggleSwitch x:Name="StartupToggle"
+                              HorizontalAlignment="Right"
+                              Toggled="StartupToggle_Toggled"/>
+            </muxc:SettingsCard>
+
+            <TextBlock x:Name="StartupStatusText"
+                       TextWrapping="Wrap"
+                       Opacity="0.78"
+                       Visibility="Collapsed"/>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

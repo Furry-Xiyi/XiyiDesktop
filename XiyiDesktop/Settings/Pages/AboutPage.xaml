@@ -1,0 +1,77 @@
+<Page
+    x:Class="XiyiDesktop.Pages.AboutPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ScrollViewer Padding="24" HorizontalContentAlignment="Stretch">
+        <StackPanel Spacing="20" HorizontalAlignment="Stretch">
+            <TextBlock x:Uid="AboutPageTitle"
+                       FontSize="28"
+                       FontWeight="SemiBold"/>
+            <TextBlock x:Uid="AboutPageDescription"
+                       TextWrapping="Wrap"
+                       Opacity="0.78"/>
+
+            <Expander IsExpanded="True"
+                      HorizontalAlignment="Stretch"
+                      HorizontalContentAlignment="Left"
+                      MinHeight="70">
+                <Expander.Header>
+                    <Grid HorizontalAlignment="Stretch" Margin="1,0,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Image x:Name="ImgAppIcon"
+                               Grid.Column="0"
+                               Width="20"
+                               Height="20"
+                               Stretch="Uniform"
+                               VerticalAlignment="Center"/>
+
+                        <StackPanel Grid.Column="1"
+                                    Margin="20,0,0,0"
+                                    VerticalAlignment="Center">
+                            <TextBlock x:Name="TxtAppName" FontSize="14.4"/>
+                            <TextBlock x:Name="TxtCopyright"
+                                       FontSize="12"
+                                       Opacity="0.8"/>
+                        </StackPanel>
+                        <TextBlock x:Name="TxtVersion"
+                                   Grid.Column="2"
+                                   FontSize="14.4"
+                                   Opacity="0.7"
+                                   VerticalAlignment="Center"/>
+                    </Grid>
+                </Expander.Header>
+                <StackPanel>
+                    <HyperlinkButton Click="OpenExternalLink"
+                                     Tag="https://qm.qq.com/q/UPnTGW164m"
+                                     HorizontalAlignment="Left">
+                        <TextBlock x:Uid="QQGroup" VerticalAlignment="Center"/>
+                    </HyperlinkButton>
+                    <HyperlinkButton Click="OpenExternalLink"
+                                     Tag="https://discord.gg/4NScc8sEzw"
+                                     HorizontalAlignment="Left">
+                        <TextBlock x:Uid="DiscordGroup" VerticalAlignment="Center"/>
+                    </HyperlinkButton>
+                </StackPanel>
+            </Expander>
+
+            <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,20,0,20">
+                <FontIcon Glyph="&#xED15;"
+                          FontSize="20"
+                          VerticalAlignment="Center"/>
+                <HyperlinkButton Click="OpenExternalLink"
+                                 Tag="https://forms.office.com/r/jzsFaQKCpr"
+                                 Padding="0"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center">
+                    <TextBlock x:Uid="Feedback"/>
+                </HyperlinkButton>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

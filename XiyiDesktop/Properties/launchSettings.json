@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "XiyiDesktop (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "XiyiDesktop (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

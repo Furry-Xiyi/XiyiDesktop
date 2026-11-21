@@ -1,0 +1,132 @@
+<Window
+    x:Class="XiyiDesktop.DesktopWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:XiyiDesktop.DesktopItems">
+
+    <Grid x:Name="DesktopRoot" Background="Transparent" AllowDrop="True"
+          DragEnter="DesktopRoot_DragOver" DragOver="DesktopRoot_DragOver"
+          DragLeave="DesktopRoot_DragLeave" Drop="DesktopRoot_Drop"
+          RightTapped="DesktopRoot_RightTapped"
+          PointerPressed="DesktopRoot_PointerPressed" PointerMoved="DesktopRoot_PointerMoved"
+          PointerReleased="DesktopRoot_PointerReleased" PointerCanceled="DesktopRoot_PointerCanceled"
+          PointerWheelChanged="DesktopRoot_PointerWheelChanged">
+        <Grid.Resources>
+            <Storyboard x:Name="MarqueeFadeOut">
+                <DoubleAnimation Storyboard.TargetName="SelectionRectangle"
+                                 Storyboard.TargetProperty="Opacity"
+                                 From="0.25" To="0"
+                                 Duration="0:0:0.2"
+                                 EnableDependentAnimation="True" />
+            </Storyboard>
+        </Grid.Resources>
+        <Grid x:Name="DesktopSurface">
+        <local:DesktopIconLayoutPanel x:Name="DesktopItemsView"
+                                      SizeChanged="DesktopItemsView_SizeChanged">
+            <local:DesktopIconLayoutPanel.ItemTemplate>
+                <DataTemplate x:DataType="local:DesktopItemViewModel" xmlns:local="using:XiyiDesktop">
+                    <Grid Width="{x:Bind TileWidth, Mode=OneWay}" Height="{x:Bind TileHeight, Mode=OneWay}" Padding="{x:Bind TilePadding, Mode=OneWay}" RightTapped="DesktopItem_RightTapped" IsDoubleTapEnabled="True" DoubleTapped="DesktopItem_DoubleTapped" PointerEntered="DesktopItem_PointerEntered" PointerExited="DesktopItem_PointerExited" PointerPressed="DesktopItem_PointerPressed" PointerMoved="DesktopItem_PointerMoved" PointerReleased="DesktopItem_PointerReleased" PointerCanceled="DesktopItem_PointerCanceled">
+                        <Border x:Name="ItemPointerFeedback"
+                                Background="{ThemeResource SystemChromeAltLowColor}"
+                                CornerRadius="4"
+                                Opacity="0"
+                                IsHitTestVisible="False" />
+                        <Border Background="{ThemeResource SystemChromeAltLowColor}"
+                                CornerRadius="4"
+                                Opacity="{x:Bind MarqueeHoverOpacity, Mode=OneWay}"
+                                IsHitTestVisible="False" />
+                        <Border Background="{ThemeResource SystemChromeAltLowColor}"
+                                BorderBrush="{ThemeResource SystemFillColorAttentionBrush}"
+                                BorderThickness="2.5"
+                                CornerRadius="4"
+                                Opacity="0.25"
+                                IsHitTestVisible="False"
+                                Visibility="{x:Bind SelectionVisibility, Mode=OneWay}" />
+                        <StackPanel Spacing="{x:Bind PanelSpacing, Mode=OneWay}" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Grid Width="{x:Bind IconSize, Mode=OneWay}" Height="{x:Bind IconSize, Mode=OneWay}" HorizontalAlignment="Center">
+                                <FontIcon Glyph="{x:Bind IconGlyph, Mode=OneWay}" FontSize="{x:Bind GlyphSize, Mode=OneWay}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <Image Source="{x:Bind Icon, Mode=OneWay}" Stretch="Uniform"/>
+                                <Image Source="{x:Bind ShortcutArrowIcon, Mode=OneWay}"
+                                       Width="{x:Bind ShortcutArrowSize, Mode=OneWay}"
+                                       Height="{x:Bind ShortcutArrowSize, Mode=OneWay}"
+                                       HorizontalAlignment="Left"
+                                       VerticalAlignment="Bottom"
+                                       Stretch="Uniform"
+                                       IsHitTestVisible="False"
+                                       Visibility="{x:Bind ShortcutArrowVisibility, Mode=OneWay}">
+                                    <Image.RenderTransform>
+                                        <TranslateTransform X="{x:Bind ShortcutArrowOffsetX, Mode=OneWay}"
+                                                            Y="{x:Bind ShortcutArrowOffsetY, Mode=OneWay}" />
+                                    </Image.RenderTransform>
+                                </Image>
+                                <Image Source="{x:Bind ShellStatusOverlay, Mode=OneWay}"
+                                       Width="{x:Bind ShellStatusOverlaySize, Mode=OneWay}"
+                                       Height="{x:Bind ShellStatusOverlaySize, Mode=OneWay}"
+                                       HorizontalAlignment="{x:Bind ShellStatusOverlayHorizontalAlignment, Mode=OneWay}"
+                                       VerticalAlignment="Bottom"
+                                       Stretch="Uniform"
+                                       IsHitTestVisible="False" />
+                            </Grid>
+                            <TextBlock Text="{x:Bind DisplayName}" MaxWidth="{x:Bind TextWidth, Mode=OneWay}" MaxHeight="{x:Bind TextMaxHeight, Mode=OneWay}" TextAlignment="Center" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" FontSize="{x:Bind TextFontSize, Mode=OneWay}"/>
+                        </StackPanel>
+                        <Border Padding="7,4"
+                                Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
+                                CornerRadius="10"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                IsHitTestVisible="False"
+                                Visibility="{x:Bind DragOperationVisibility, Mode=OneWay}">
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <FontIcon Glyph="{x:Bind DragOperationGlyph, Mode=OneWay}"
+                                          FontSize="13"
+                                          Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
+                                <TextBlock Text="{x:Bind DragOperationText, Mode=OneWay}"
+                                           FontSize="11"
+                                           VerticalAlignment="Center"
+                                           Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
+                            </StackPanel>
+                        </Border>
+                        <Border Background="{ThemeResource SystemFillColorAttentionBrush}"
+                                BorderBrush="{ThemeResource AccentFillColorSelectedTextBackgroundBrush}"
+                                BorderThickness="2.5"
+                                CornerRadius="4"
+                                Opacity="0.5"
+                                IsHitTestVisible="False"
+                                Visibility="{x:Bind CutVisibility, Mode=OneWay}" />
+                    </Grid>
+                </DataTemplate>
+            </local:DesktopIconLayoutPanel.ItemTemplate>
+        </local:DesktopIconLayoutPanel>
+
+        </Grid>
+
+        <Canvas x:Name="SelectionOverlay" IsHitTestVisible="False">
+            <Border x:Name="SelectionRectangle"
+                    Background="{ThemeResource AccentAcrylicBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource AccentFillColorDefaultBrush}"
+                    BorderThickness="2.5"
+                    CornerRadius="4"
+                    Opacity="0.95"
+                    Visibility="Collapsed" />
+        </Canvas>
+
+        <Canvas x:Name="ExternalDragOperationOverlay" IsHitTestVisible="False">
+            <Border x:Name="ExternalDragOperationCue"
+                    Padding="8,5"
+                    Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
+                    CornerRadius="12"
+                    Visibility="Collapsed">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                    <FontIcon x:Name="ExternalDragOperationGlyph"
+                              FontSize="14"
+                              Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
+                    <TextBlock x:Name="ExternalDragOperationText"
+                               FontSize="12"
+                               VerticalAlignment="Center"
+                               Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
+                </StackPanel>
+            </Border>
+        </Canvas>
+
+    </Grid>
+</Window>

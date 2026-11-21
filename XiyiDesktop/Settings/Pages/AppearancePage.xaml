@@ -1,0 +1,63 @@
+<Page
+    x:Class="XiyiDesktop.Pages.AppearancePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:muxc="using:CommunityToolkit.WinUI.Controls">
+
+    <ScrollViewer Padding="20,20,20,0" HorizontalContentAlignment="Stretch">
+        <StackPanel Spacing="20" HorizontalAlignment="Stretch">
+            <TextBlock x:Uid="AppearancePageTitle"
+                       FontSize="28"
+                       FontWeight="SemiBold"/>
+            <TextBlock x:Uid="AppearancePageDescription"
+                       TextWrapping="Wrap"
+                       Opacity="0.78"/>
+
+            <muxc:SettingsCard x:Uid="ThemeSettingsCard"
+                                   HorizontalAlignment="Stretch"
+                                   HorizontalContentAlignment="Stretch"
+                                   Visibility="Collapsed"
+                                   MinHeight="70" Padding="16,0">
+                <muxc:SettingsCard.HeaderIcon>
+                    <FontIcon Glyph="&#xE706;"/>
+                </muxc:SettingsCard.HeaderIcon>
+                <RadioButtons x:Name="ThemeOptions"
+                              HorizontalAlignment="Right"
+                              SelectionChanged="ThemeOptions_SelectionChanged">
+                    <RadioButton x:Uid="ThemeSystem" Tag="System"/>
+                    <RadioButton x:Uid="ThemeLight" Tag="Light"/>
+                    <RadioButton x:Uid="ThemeDark" Tag="Dark"/>
+                </RadioButtons>
+            </muxc:SettingsCard>
+
+            <muxc:SettingsCard x:Uid="MaterialSettingsCard"
+                                   HorizontalAlignment="Stretch"
+                                   HorizontalContentAlignment="Stretch"
+                                   Visibility="Collapsed"
+                                   MinHeight="70" Padding="16,0">
+                <muxc:SettingsCard.HeaderIcon>
+                    <FontIcon Glyph="&#xE2B1;"/>
+                </muxc:SettingsCard.HeaderIcon>
+                <RadioButtons x:Name="MaterialOptions"
+                              HorizontalAlignment="Right"
+                              SelectionChanged="MaterialOptions_SelectionChanged">
+                    <RadioButton x:Uid="MaterialMica" Tag="Mica"/>
+                    <RadioButton x:Uid="MaterialMicaAlt" Tag="MicaAlt"/>
+                    <RadioButton x:Uid="MaterialAcrylic" Tag="Acrylic"/>
+                </RadioButtons>
+            </muxc:SettingsCard>
+
+            <muxc:SettingsCard x:Uid="ShortcutArrowSettingsCard"
+                                   HorizontalAlignment="Stretch"
+                                   HorizontalContentAlignment="Stretch"
+                                   MinHeight="70" Padding="16,0">
+                <muxc:SettingsCard.HeaderIcon>
+                    <ImageIcon x:Name="ShortcutArrowIcon"/>
+                </muxc:SettingsCard.HeaderIcon>
+                <ToggleSwitch x:Name="ShortcutArrowToggle"
+                              HorizontalAlignment="Right"
+                              Toggled="ShortcutArrowToggle_Toggled"/>
+            </muxc:SettingsCard>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

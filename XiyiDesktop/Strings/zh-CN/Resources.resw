@@ -1,0 +1,550 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppDisplayName" xml:space="preserve">
+    <value>惜忆桌面</value>
+  </data>
+  <data name="DesktopSettingsAppName" xml:space="preserve">
+    <value>惜忆桌面设置</value>
+  </data>
+  <data name="AppDescription" xml:space="preserve">
+    <value>基于 WinUI 3 的自定义桌面原型</value>
+  </data>
+  <data name="PublisherDisplayName" xml:space="preserve">
+    <value>惜忆想睡觉</value>
+  </data>
+  <data name="DesktopHostConnected" xml:space="preserve">
+    <value>桌面窗口已挂接到 Explorer 桌面图标层。</value>
+  </data>
+  <data name="DesktopHostSearchingText" xml:space="preserve">
+    <value>正在检测 Explorer 桌面窗口结构…</value>
+  </data>
+  <data name="DesktopHostSearching.Text" xml:space="preserve">
+    <value>正在检测 Explorer 桌面窗口结构…</value>
+  </data>
+  <data name="DesktopTitle.Text" xml:space="preserve">
+    <value>惜忆桌面</value>
+  </data>
+  <data name="DesktopContext_Refresh.Text" xml:space="preserve">
+    <value>刷新</value>
+  </data>
+  <data name="DesktopSettingsButtonText.Text" xml:space="preserve">
+    <value>设置</value>
+  </data>
+  <data name="DesktopSettingsButton.AutomationProperties.Name" xml:space="preserve">
+    <value>打开桌面设置</value>
+  </data>
+  <data name="DesktopContext_Settings.Text" xml:space="preserve">
+    <value>桌面设置</value>
+  </data>
+  <data name="DesktopHostClassicWorkerW" xml:space="preserve">
+    <value>经典 WorkerW</value>
+  </data>
+  <data name="DesktopHostExperimentalProgman" xml:space="preserve">
+    <value>经典 Progman 桌面层</value>
+  </data>
+  <data name="DesktopContext_Exit.Text" xml:space="preserve">
+    <value>退出桌面</value>
+  </data>
+  <data name="SettingsLaunchDialog_Title" xml:space="preserve">
+    <value>无法打开设置</value>
+  </data>
+  <data name="SettingsLaunchDialog_Close" xml:space="preserve">
+    <value>关闭</value>
+  </data>
+  <data name="SettingsLaunchDialog_MissingMessage" xml:space="preserve">
+    <value>设置应用尚未安装。请在 Visual Studio 中部署设置项目，或运行仓库 tools 文件夹中的双应用开发部署脚本。</value>
+  </data>
+  <data name="SettingsLaunchDialog_FailedMessage" xml:space="preserve">
+    <value>设置应用已安装，但 Windows 无法启动它。请重新部署设置项目后再试。</value>
+  </data>
+  <data name="DesktopItem_ThisPc" xml:space="preserve">
+    <value>此电脑</value>
+  </data>
+  <data name="DesktopItem_RecycleBin" xml:space="preserve">
+    <value>回收站</value>
+  </data>
+  <data name="DesktopItem_UserFiles" xml:space="preserve">
+    <value>用户的文件</value>
+  </data>
+  <data name="DesktopItem_Network" xml:space="preserve">
+    <value>网络</value>
+  </data>
+  <data name="DesktopItem_ControlPanel" xml:space="preserve">
+    <value>控制面板</value>
+  </data>
+  <data name="DesktopItem_GenericFile" xml:space="preserve">
+    <value>文件</value>
+  </data>
+  <data name="DesktopItem_Folder" xml:space="preserve">
+    <value>文件夹</value>
+  </data>
+  <data name="DesktopContext_Paste.Text" xml:space="preserve">
+    <value>粘贴</value>
+  </data>
+  <data name="DesktopContext_View.Text" xml:space="preserve"><value>查看</value></data>
+  <data name="DesktopContext_ShowIcons.Text" xml:space="preserve"><value>显示桌面图标</value></data>
+  <data name="DesktopContext_AutoArrange.Text" xml:space="preserve"><value>自动排列图标</value></data>
+  <data name="DesktopContext_AlignToGrid.Text" xml:space="preserve"><value>将图标与网格对齐</value></data>
+  <data name="DesktopDrag_Move" xml:space="preserve"><value>移动</value></data>
+  <data name="DesktopDrag_Copy" xml:space="preserve"><value>复制</value></data>
+  <data name="DesktopDrag_Delete" xml:space="preserve"><value>删除</value></data>
+  <data name="DesktopContext_HideIcons.Text" xml:space="preserve"><value>隐藏桌面图标</value></data>
+  <data name="DesktopContext_SortBy.Text" xml:space="preserve"><value>排序方式</value></data>
+  <data name="DesktopContext_UndoDelete.Text" xml:space="preserve"><value>撤销 删除</value></data>
+  <data name="DesktopContext_New.Text" xml:space="preserve"><value>新建</value></data>
+  <data name="DesktopContext_DisplaySettings.Text" xml:space="preserve"><value>显示设置</value></data>
+  <data name="DesktopContext_Personalize.Text" xml:space="preserve"><value>个性化</value></data>
+  <data name="DesktopContext_OpenInTerminal.Text" xml:space="preserve"><value>在终端中打开</value></data>
+  <data name="DesktopContext_ApplicationExtensions.Text" xml:space="preserve"><value>应用扩展</value></data>
+  <data name="DesktopContext_CustomizeMenu.Text" xml:space="preserve"><value>自定义菜单</value></data>
+  <data name="DesktopContext_ManageExtensions.Text" xml:space="preserve"><value>管理扩展</value></data>
+  <data name="DesktopContext_NewFolder.Text" xml:space="preserve"><value>文件夹</value></data>
+  <data name="DesktopContext_NewTextDocument.Text" xml:space="preserve"><value>文本文档</value></data>
+  <data name="DesktopContext_NewShortcut.Text" xml:space="preserve"><value>快捷方式</value></data>
+  <data name="DesktopContext_NewBitmap.Text" xml:space="preserve"><value>BMP 图像</value></data>
+  <data name="DesktopContext_NewWord.Text" xml:space="preserve"><value>Microsoft Word 文档</value></data>
+  <data name="DesktopContext_NewPowerPoint.Text" xml:space="preserve"><value>Microsoft PowerPoint 演示文稿</value></data>
+  <data name="DesktopContext_NewExcel.Text" xml:space="preserve"><value>Microsoft Excel 工作表</value></data>
+  <data name="DesktopContext_NewCompressedFolder.Text" xml:space="preserve"><value>压缩(zipped)文件夹</value></data>
+  <data name="DesktopContext_NewFolderName" xml:space="preserve"><value>新建文件夹</value></data>
+  <data name="DesktopContext_NewTextDocumentName" xml:space="preserve"><value>新建文本文档.txt</value></data>
+  <data name="DesktopContext_NewShortcutName" xml:space="preserve"><value>新建快捷方式.lnk</value></data>
+  <data name="DesktopContext_NewShortcutTarget" xml:space="preserve"><value>请输入要创建快捷方式的目标文件或文件夹完整路径。</value></data>
+  <data name="DesktopContext_NewBitmapName" xml:space="preserve"><value>新建 BMP 图像.bmp</value></data>
+  <data name="DesktopContext_NewWordName" xml:space="preserve"><value>新建 Microsoft Word 文档.docx</value></data>
+  <data name="DesktopContext_NewPowerPointName" xml:space="preserve"><value>新建 Microsoft PowerPoint 演示文稿.pptx</value></data>
+  <data name="DesktopContext_NewExcelName" xml:space="preserve"><value>新建 Microsoft Excel 工作表.xlsx</value></data>
+  <data name="DesktopContext_NewCompressedFolderName" xml:space="preserve"><value>新建压缩(zipped)文件夹.zip</value></data>
+  <data name="DesktopContext_NewTextDocumentTemplate" xml:space="preserve"><value>新建文本文档</value></data>
+  <data name="DesktopContext_OpenDesktopInExplorer.Text" xml:space="preserve"><value>在文件资源管理器中打开桌面</value></data>
+  <data name="DesktopContext_ManageInstalledApps.Text" xml:space="preserve"><value>管理已安装应用</value></data>
+  <data name="DesktopView_Small.Text" xml:space="preserve"><value>小图标</value></data>
+  <data name="DesktopView_Medium.Text" xml:space="preserve"><value>中图标</value></data>
+  <data name="DesktopView_Large.Text" xml:space="preserve"><value>大图标</value></data>
+  <data name="DesktopSort_Name.Text" xml:space="preserve"><value>名称</value></data>
+  <data name="DesktopSort_Manual.Text" xml:space="preserve"><value>手动</value></data>
+  <data name="DesktopSort_Size.Text" xml:space="preserve"><value>大小</value></data>
+  <data name="DesktopSort_Type.Text" xml:space="preserve"><value>项目类型</value></data>
+  <data name="DesktopSort_Modified.Text" xml:space="preserve"><value>修改日期</value></data>
+  <data name="DesktopContext_CustomizeTitle" xml:space="preserve"><value>自定义桌面菜单</value></data>
+  <data name="DesktopContext_CustomizeDescription" xml:space="preserve"><value>配置此应用的菜单入口。Windows 的候选注册表设置仅以只读方式读取；此处不会更改 Windows 设置。</value></data>
+  <data name="DesktopContext_ShowExtensions" xml:space="preserve"><value>显示应用扩展兼容入口</value></data>
+  <data name="DesktopContext_RegistryValues" xml:space="preserve"><value>检测到的 Windows 上下文菜单候选值</value></data>
+  <data name="DesktopContext_UnknownValue" xml:space="preserve"><value>未设置或不可用</value></data>
+  <data name="DesktopContext_Save" xml:space="preserve"><value>保存</value></data>
+  <data name="DesktopContext_Cancel" xml:space="preserve"><value>取消</value></data>
+  <data name="DesktopContext_NewItemFailed" xml:space="preserve"><value>无法在桌面上创建该项目。</value></data>
+  <data name="DesktopContext_RestoreHelp" xml:space="preserve"><value>已删除的桌面项目会移入 Windows 回收站。请在回收站中选择项目并使用“还原”。</value></data>
+  <data name="DesktopItemContext_Open.Text" xml:space="preserve">
+    <value>打开</value>
+  </data>
+  <data name="DesktopItemContext_OpenFileLocation.Text" xml:space="preserve"><value>打开文件所在的位置</value></data>
+  <data name="DesktopItemContext_RunAsAdministrator.Text" xml:space="preserve"><value>以管理员身份运行</value></data>
+  <data name="DesktopItemContext_Copy.Text" xml:space="preserve">
+    <value>复制</value>
+  </data>
+  <data name="DesktopItemContext_Cut.Text" xml:space="preserve">
+    <value>剪切</value>
+  </data>
+  <data name="DesktopItemContext_Paste.Text" xml:space="preserve">
+    <value>粘贴</value>
+  </data>
+  <data name="DesktopItemContext_Rename.Text" xml:space="preserve">
+    <value>重命名</value>
+  </data>
+  <data name="DesktopItemContext_Delete.Text" xml:space="preserve">
+    <value>删除</value>
+  </data>
+  <data name="DesktopItemContext_Properties.Text" xml:space="preserve">
+    <value>属性</value>
+  </data>
+  <data name="DesktopItemContext_ManageThisPc.Text" xml:space="preserve">
+    <value>管理</value>
+  </data>
+  <data name="DesktopItemContext_EmptyRecycleBin.Text" xml:space="preserve">
+    <value>清空回收站</value>
+  </data>
+  <data name="DesktopItems_Count" xml:space="preserve">
+    <value>{0} 个项目</value>
+  </data>
+  <data name="DesktopRename_Title" xml:space="preserve">
+    <value>重命名</value>
+  </data>
+  <data name="DesktopRename_Message" xml:space="preserve">
+    <value>输入此项目的新名称。</value>
+  </data>
+  <data name="DesktopRename_Placeholder" xml:space="preserve">
+    <value>名称</value>
+  </data>
+  <data name="DesktopDelete_Title" xml:space="preserve">
+    <value>移到回收站</value>
+  </data>
+  <data name="DesktopDelete_Message" xml:space="preserve">
+    <value>确定要将所选的 {0} 个项目移到回收站吗？</value>
+  </data>
+  <data name="DesktopAction_Confirm" xml:space="preserve">
+    <value>确认</value>
+  </data>
+  <data name="DesktopAction_Skip" xml:space="preserve">
+    <value>跳过</value>
+  </data>
+  <data name="DesktopAction_Cancel" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="DesktopAction_Delete" xml:space="preserve">
+    <value>移到回收站</value>
+  </data>
+  <data name="DesktopAction_ErrorTitle" xml:space="preserve">
+    <value>操作失败</value>
+  </data>
+  <data name="DesktopAction_ErrorMessage" xml:space="preserve">
+    <value>无法完成此操作。请确认项目仍然存在，并且你有相应的访问权限。</value>
+  </data>
+  <data name="DesktopAction_Close" xml:space="preserve">
+    <value>关闭</value>
+  </data>
+<data name="SettingsWindowTitle" xml:space="preserve">
+    <value>惜忆桌面设置</value>
+  </data><data name="HomeItem.Content" xml:space="preserve">
+    <value>概览</value>
+  </data><data name="HomePageWelcomeText.Text" xml:space="preserve">
+    <value>欢迎使用惜忆桌面设置</value>
+  </data><data name="AppearanceGroup.Text" xml:space="preserve">
+    <value>外观</value>
+  </data><data name="ThemeTitle.Text" xml:space="preserve">
+    <value>应用主题</value>
+  </data><data name="ThemeSubtitle.Text" xml:space="preserve">
+    <value>选择要显示的应用主题</value>
+  </data><data name="ThemeSystem.Content" xml:space="preserve">
+    <value>跟随系统</value>
+  </data><data name="ThemeLight.Content" xml:space="preserve">
+    <value>浅色</value>
+  </data><data name="ThemeDark.Content" xml:space="preserve">
+    <value>深色</value>
+  </data><data name="MaterialTitle.Text" xml:space="preserve">
+    <value>背景材质</value>
+  </data><data name="MaterialSubtitle.Text" xml:space="preserve">
+    <value>选择要显示的应用材质</value>
+  </data><data name="MaterialMica.Content" xml:space="preserve">
+    <value>Mica</value>
+  </data><data name="MaterialMicaAlt.Content" xml:space="preserve">
+    <value>Mica Alt</value>
+  </data><data name="MaterialAcrylic.Content" xml:space="preserve">
+    <value>Acrylic</value>
+  </data><data name="PanePositionLeft.Content" xml:space="preserve">
+    <value>左侧</value>
+  </data><data name="PanePositionTop.Content" xml:space="preserve">
+    <value>顶部</value>
+  </data><data name="SoundGroup.Text" xml:space="preserve">
+    <value>声音</value>
+  </data><data name="SoundToggle.Header" xml:space="preserve">
+    <value>启用控件声音</value>
+  </data><data name="AboutGroup.Text" xml:space="preserve">
+    <value>关于</value>
+  </data><data name="QQGroup.Text" xml:space="preserve">
+    <value>QQ 群</value>
+  </data><data name="DiscordGroup.Text" xml:space="preserve">
+    <value>Discord 频道</value>
+  </data><data name="Feedback.Text" xml:space="preserve">
+    <value>发送反馈</value>
+  </data><data name="ExternalOpenDialog.Title" xml:space="preserve">
+    <value>此应用尝试打开外部应用</value>
+  </data><data name="ExternalOpenDialog.PrimaryButtonText" xml:space="preserve">
+    <value>打开</value>
+  </data><data name="ExternalOpenDialog.SecondaryButtonText" xml:space="preserve">
+    <value>取消</value>
+  </data><data name="DialogMessage.Text" xml:space="preserve">
+    <value>是否允许？</value>
+  </data><data name="HomePageJoinButton.Content" xml:space="preserve">
+    <value>查看Github仓库</value>
+  </data><data name="Settings_SoundCard.Description" xml:space="preserve">
+    <value>控制应用中的交互提示音</value>
+  </data><data name="Settings_NavCard.Description" xml:space="preserve">
+    <value>选择要显示的导航栏位置</value>
+  </data><data name="Settings_SoundCard.Header" xml:space="preserve">
+    <value>控件声音</value>
+  </data><data name="Settings_NavCard.Header" xml:space="preserve">
+    <value>导航栏位置</value>
+  </data><data name="Settings_Breadcrumb" xml:space="preserve">
+    <value>设置</value>
+  </data><data name="SettingsTitle.Text" xml:space="preserve">
+    <value>设置</value>
+  </data><data name="SettingsHomeNavItem.Content" xml:space="preserve">
+    <value>概览</value>
+  </data><data name="AppearanceNavItem.Content" xml:space="preserve">
+    <value>外观</value>
+  </data><data name="InteractionNavItem.Content" xml:space="preserve">
+    <value>交互</value>
+  </data><data name="AboutNavItem.Content" xml:space="preserve">
+    <value>关于</value>
+  </data><data name="AppearancePageTitle.Text" xml:space="preserve">
+    <value>外观</value>
+  </data><data name="AppearancePageDescription.Text" xml:space="preserve">
+    <value>设置窗口的主题、背景材质和桌面快捷方式箭头显示。</value>
+  </data><data name="ThemeSettingsCard.Header" xml:space="preserve">
+    <value>应用主题</value>
+  </data><data name="ThemeSettingsCard.Description" xml:space="preserve">
+    <value>选择浅色、深色或跟随系统。</value>
+  </data><data name="MaterialSettingsCard.Header" xml:space="preserve">
+    <value>背景材质</value>
+  </data><data name="MaterialSettingsCard.Description" xml:space="preserve">
+    <value>选择设置窗口使用的背景效果。</value>
+  </data><data name="ShortcutArrowSettingsCard.Header" xml:space="preserve">
+    <value>快捷方式箭头</value>
+  </data><data name="ShortcutArrowSettingsCard.Description" xml:space="preserve">
+    <value>在桌面快捷方式图标上显示 Windows 系统箭头标记。</value>
+  </data><data name="InteractionPageTitle.Text" xml:space="preserve">
+    <value>交互</value>
+  </data><data name="InteractionPageDescription.Text" xml:space="preserve">
+    <value>配置导航位置和应用内的交互提示音。</value>
+  </data><data name="AboutPageTitle.Text" xml:space="preserve">
+    <value>关于</value>
+  </data><data name="AboutPageDescription.Text" xml:space="preserve">
+    <value>查看应用版本、社区入口和反馈方式。</value>
+  </data><data name="AboutCommunityHeading.Text" xml:space="preserve">
+    <value>社区与反馈</value>
+  </data><data name="AboutCopyright" xml:space="preserve">
+    <value>© {0} {1}。保留所有权利。</value>
+  </data><data name="DesktopRefreshPlaceholder" xml:space="preserve">
+    <value>桌面 Host 原型已运行；桌面项目刷新将在后续阶段接入。</value>
+  </data><data name="SettingsHomeTitle.Text" xml:space="preserve">
+    <value>桌面设置</value>
+  </data><data name="SettingsHomeDescription.Text" xml:space="preserve">
+    <value>此窗口用于配置惜忆桌面。桌面使用当前 Windows 壁纸并显示桌面文件夹中的图标；右键桌面空白处可打开设置。</value>
+  </data><data name="SettingsHomeHostStatus.Title" xml:space="preserve">
+    <value>Host 原型状态</value>
+  </data><data name="SettingsHomeHostStatus.Message" xml:space="preserve">
+    <value>阶段二仅实现窗口挂接原型。当前 Windows 版本和桌面窗口结构仍需真实运行验证。</value>
+  </data><data name="SettingsHomeOpenDesktop.Content" xml:space="preserve">
+    <value>显示桌面</value>
+  </data>
+  <data name="BehaviorNavItem.Content" xml:space="preserve"><value>行为</value></data>
+  <data name="BehaviorPageTitle.Text" xml:space="preserve"><value>行为</value></data>
+  <data name="BehaviorPageDescription.Text" xml:space="preserve"><value>管理应用的启动行为。</value></data>
+  <data name="StartupSettingsCard.Header" xml:space="preserve"><value>开机自启</value></data>
+  <data name="StartupSettingsCard.Description" xml:space="preserve"><value>登录 Windows 时自动启动惜忆桌面。启用时 Windows 可能会请求确认。</value></data>
+  <data name="Behavior_StartupUnavailable" xml:space="preserve"><value>Windows 启动任务当前不可用。</value></data>
+  <data name="Behavior_StartupUpdateFailed" xml:space="preserve"><value>无法更改开机自启设置，请稍后重试。</value></data>
+  <data name="Behavior_StartupDisabledByUser" xml:space="preserve"><value>Windows 已禁用此应用的开机自启。请在任务管理器的“启动应用”中重新启用。</value></data>
+  <data name="Behavior_StartupDisabledByPolicy" xml:space="preserve"><value>系统策略禁止此应用开机自启。</value></data>
+  <data name="Behavior_StartupEnabledByPolicy" xml:space="preserve"><value>系统策略已强制启用此应用的开机自启。</value></data>
+  <data name="SettingsWidgetsNavItem.Content" xml:space="preserve"><value>Windows 小组件研究</value></data>
+  <data name="WidgetsResearchTitle.Text" xml:space="preserve"><value>Windows 小组件研究</value></data>
+  <data name="WidgetsResearchDescription.Text" xml:space="preserve"><value>发现已安装应用注册的 Windows 小组件，并记录公开 API 的实例读取结果。</value></data>
+  <data name="WidgetsResearchBoundaryTitle.Text" xml:space="preserve"><value>当前验证范围</value></data>
+  <data name="WidgetsResearchBoundaryDescription.Text" xml:space="preserve"><value>目录发现使用 AppExtension 公共 API。WidgetManager 只查询与当前调用提供程序关联的实例；其结果不能证明可读取 Widgets Board 中其他应用的小组件。</value></data>
+  <data name="WidgetsResearchRefreshButton.Content" xml:space="preserve"><value>刷新小组件目录</value></data>
+  <data name="WidgetsResearchReadInstancesButton.Content" xml:space="preserve"><value>读取当前提供程序实例</value></data>
+  <data name="WidgetsResearchCatalogHeading.Text" xml:space="preserve"><value>发现的定义</value></data>
+  <data name="WidgetsResearchNoDefinitions.Text" xml:space="preserve"><value>尚未发现可解析的小组件定义。可查看下方诊断信息。</value></data>
+  <data name="WidgetsResearchInstancesHeading.Text" xml:space="preserve"><value>WidgetManager 实例读取</value></data>
+  <data name="WidgetsResearchKnownIdHeading.Text" xml:space="preserve"><value>探测已知实例 ID</value></data>
+  <data name="WidgetsResearchKnownIdDescription.Text" xml:space="preserve"><value>输入由 Provider 自身记录的 Widget ID。此操作只调用 GetWidgetInfo(id)，不枚举 Widgets Board。若返回 null，只能说明当前调用提供程序范围内没有此实例，不能判断它是否属于其他提供程序或已被移除。</value></data>
+  <data name="WidgetsResearchKnownIdTextBox.Header" xml:space="preserve"><value>Widget ID</value></data>
+  <data name="WidgetsResearchKnownIdTextBox.PlaceholderText" xml:space="preserve"><value>粘贴已知的实例 ID</value></data>
+  <data name="WidgetsResearchKnownIdProbeButton.Content" xml:space="preserve"><value>只读查询</value></data>
+  <data name="WidgetsResearchDiagnosticsHeading.Text" xml:space="preserve"><value>扫描诊断</value></data>
+  <data name="WidgetsResearchLogPath" xml:space="preserve"><value>实验日志：{0}</value></data>
+  <data name="WidgetsResearchScanning" xml:space="preserve"><value>正在扫描。Windows 版本：{0}</value></data>
+  <data name="WidgetsResearchScanFailed" xml:space="preserve"><value>目录扫描失败：{0}（HRESULT 0x{1}）</value></data>
+  <data name="WidgetsResearchEnvironment" xml:space="preserve"><value>Windows {0} · 最近扫描：{1}</value></data>
+  <data name="WidgetsResearchCatalogSummary" xml:space="preserve"><value>已发现 {0} 个扩展/定义记录；其中 {1} 个定义；{2} 条诊断记录。</value></data>
+  <data name="WidgetsResearchInstancesNotQueried" xml:space="preserve"><value>尚未调用 WidgetManager。读取操作仅作用于 XiyiDesktop 自身提供程序范围。</value></data>
+  <data name="WidgetsResearchInstancesCount" xml:space="preserve"><value>WidgetManager 返回 {0} 个当前提供程序实例。</value></data>
+  <data name="WidgetsResearchStatusAvailable" xml:space="preserve"><value>读取成功：{0} 个当前提供程序实例。</value></data>
+  <data name="WidgetsResearchStatusEmpty" xml:space="preserve"><value>查询成功，当前提供程序返回 0 个实例。</value></data>
+  <data name="WidgetsResearchStatusPartial" xml:space="preserve"><value>部分读取：获得 {0} 个实例，但部分 API 调用失败。</value></data>
+  <data name="WidgetsResearchStatusUnsupported" xml:space="preserve"><value>当前 Windows 或运行环境不支持 WidgetManager 查询。</value></data>
+  <data name="WidgetsResearchStatusUnavailable" xml:space="preserve"><value>WidgetManager 当前不可用，无法确认实例数量。</value></data>
+  <data name="WidgetsResearchStatusFailed" xml:space="preserve"><value>WidgetManager 诊断失败。</value></data>
+  <data name="WidgetsResearchInstancesEmpty" xml:space="preserve"><value>当前提供程序没有可读取的实例。XiyiDesktop 尚未注册自己的小组件提供程序，因此这不代表系统没有已固定的小组件。</value></data>
+  <data name="WidgetsResearchInstanceQueryFailed" xml:space="preserve"><value>WidgetManager 查询失败：{0}：{1}（HRESULT 0x{2}）</value></data>
+  <data name="WidgetsResearchNotAvailableOnThisSystem" xml:space="preserve"><value>此系统或当前应用环境未能完成 WidgetManager 查询；详细异常已写入诊断日志。</value></data>
+  <data name="WidgetsResearchAppName" xml:space="preserve"><value>应用名称</value></data>
+  <data name="WidgetsResearchPackageFamilyName" xml:space="preserve"><value>Package Family Name</value></data>
+  <data name="WidgetsResearchDefinitionId" xml:space="preserve"><value>Definition ID</value></data>
+  <data name="WidgetsResearchExtensionId" xml:space="preserve"><value>扩展 ID</value></data>
+  <data name="WidgetsResearchNoDefinitionId" xml:space="preserve"><value>未解析</value></data>
+  <data name="WidgetsResearchClsid" xml:space="preserve"><value>Provider CLSID</value></data>
+  <data name="WidgetsResearchName" xml:space="preserve"><value>小组件名称</value></data>
+  <data name="WidgetsResearchDescriptionField" xml:space="preserve"><value>描述</value></data>
+  <data name="WidgetsResearchProviderIcons" xml:space="preserve"><value>提供程序图标路径</value></data>
+  <data name="WidgetsResearchResources" xml:space="preserve"><value>图标/预览资源文件</value></data>
+  <data name="WidgetsResearchSizes" xml:space="preserve"><value>支持尺寸</value></data>
+  <data name="WidgetsResearchActivation" xml:space="preserve"><value>激活声明</value></data>
+  <data name="WidgetsResearchRegistered" xml:space="preserve"><value>已注册</value></data>
+  <data name="WidgetsResearchPinned" xml:space="preserve"><value>已固定（第三方实例）</value></data>
+  <data name="WidgetsResearchCurrentState" xml:space="preserve"><value>当前状态</value></data>
+  <data name="WidgetsResearchTemplate" xml:space="preserve"><value>Template</value></data>
+  <data name="WidgetsResearchData" xml:space="preserve"><value>Data</value></data>
+  <data name="WidgetsResearchCustomState" xml:space="preserve"><value>CustomState</value></data>
+  <data name="WidgetsResearchCompatibility" xml:space="preserve"><value>兼容性</value></data>
+  <data name="WidgetsResearchYes" xml:space="preserve"><value>是</value></data>
+  <data name="WidgetsResearchUnknown" xml:space="preserve"><value>未知；当前公共查询不提供此结论</value></data>
+  <data name="WidgetsResearchUnavailable" xml:space="preserve"><value>不可用/未读取</value></data>
+  <data name="WidgetsResearchResourceMissing" xml:space="preserve"><value>未找到文件</value></data>
+  <data name="WidgetsResearchNotRead" xml:space="preserve"><value>尚未读取（没有第三方实例数据）</value></data>
+  <data name="WidgetsResearchNotValidated" xml:space="preserve"><value>未验证</value></data>
+  <data name="WidgetsResearchInstanceId" xml:space="preserve"><value>实例 ID</value></data>
+  <data name="WidgetsResearchSize" xml:space="preserve"><value>尺寸</value></data>
+  <data name="WidgetsResearchActive" xml:space="preserve"><value>激活状态</value></data>
+  <data name="WidgetsResearchLastUpdate" xml:space="preserve"><value>最后更新时间</value></data>
+  <data name="WidgetsResearchScope" xml:space="preserve"><value>API 范围</value></data>
+  <data name="WidgetsResearchNoDiagnostics" xml:space="preserve"><value>本次扫描没有记录错误。</value></data>
+  <data name="DesktopItemContext_SendTo.Text" xml:space="preserve"><value>发送到</value></data>
+  <data name="DesktopItemContext_Print.Text" xml:space="preserve"><value>打印</value></data>
+  <data name="DesktopItemContext_CreateShortcut.Text" xml:space="preserve"><value>创建快捷方式</value></data>
+  <data name="DesktopItemContext_CopyAsPath.Text" xml:space="preserve"><value>复制文件地址</value></data>
+  <data name="DesktopItemContext_Share.Text" xml:space="preserve"><value>共享</value></data>
+  <data name="DesktopItemContext_RotateImage.Text" xml:space="preserve"><value>旋转图像</value></data>
+  <data name="DesktopItemContext_RotateLeft.Text" xml:space="preserve"><value>向左旋转</value></data>
+  <data name="DesktopItemContext_RotateRight.Text" xml:space="preserve"><value>向右旋转</value></data>
+  <data name="DesktopItemContext_ShortcutName" xml:space="preserve"><value>{0} - 快捷方式.lnk</value></data>
+  <data name="DesktopContext_ShowMoreOptions.Text" xml:space="preserve"><value>显示更多选项</value></data>
+  <data name="WidgetPickerTitle" xml:space="preserve"><value>小组件</value></data>
+  <data name="WidgetPickerListHeading.Text" xml:space="preserve"><value>可用小组件</value></data>
+  <data name="WidgetPickerLoading.Content" xml:space="preserve"><value>正在加载…</value></data>
+  <data name="WidgetPickerPreviewUnavailable.Text" xml:space="preserve"><value>此小组件没有可用的预览图</value></data>
+  <data name="WidgetPickerSize.Header" xml:space="preserve"><value>大小</value></data>
+  <data name="WidgetPickerSizeButton.Content" xml:space="preserve"><value>大小</value></data>
+  <data name="WidgetPickerSizeLabel" xml:space="preserve"><value>大小</value></data>
+  <data name="WidgetPickerAddButton.Content" xml:space="preserve"><value>添加到桌面</value></data>
+  <data name="WidgetPickerAddLabel" xml:space="preserve"><value>添加到桌面</value></data>
+  <data name="WidgetPickerAdding" xml:space="preserve"><value>正在添加…</value></data>
+  <data name="WidgetPickerDesktopFullHint.Text" xml:space="preserve"><value>桌面已满，无法添加此小组件</value></data>
+  <data name="WidgetPickerLoadingStatus.Text" xml:space="preserve"><value>正在加载已安装的小组件…</value></data>
+  <data name="WidgetPickerEmptyCatalog" xml:space="preserve"><value>没有发现可用的小组件。</value></data>
+  <data name="WidgetPickerCatalogUnavailable" xml:space="preserve"><value>暂时无法读取小组件目录，请稍后重试。</value></data>
+  <data name="WidgetPickerCatalogCount" xml:space="preserve"><value>已找到 {0} 个小组件。</value></data>
+  <data name="WidgetPickerSizeSmall" xml:space="preserve"><value>小</value></data>
+  <data name="WidgetPickerSizeMedium" xml:space="preserve"><value>中</value></data>
+  <data name="WidgetPickerSizeLarge" xml:space="preserve"><value>大</value></data>
+  <data name="DesktopContext_NewWidget.Text" xml:space="preserve"><value>小组件</value></data>
+  <data name="WidgetPickerAlreadyAdded" xml:space="preserve"><value>此小组件已添加到桌面</value></data>
+  <data name="WidgetPickerAddFailed" xml:space="preserve"><value>无法添加此小组件，请稍后重试。</value></data>
+  <data name="WidgetsCardLoading" xml:space="preserve"><value>正在加载小组件…</value></data>
+  <data name="WidgetsCardUnavailable" xml:space="preserve"><value>小组件暂时不可用</value></data>
+  <data name="WidgetsCardContentTruncated" xml:space="preserve"><value>小组件内容超出当前尺寸，部分内容已被截断。</value></data>
+  <data name="WidgetsSizeSmall" xml:space="preserve"><value>小</value></data>
+  <data name="WidgetsSizeMedium" xml:space="preserve"><value>中</value></data>
+  <data name="WidgetsSizeLarge" xml:space="preserve"><value>大</value></data>
+  <data name="WidgetsCustomize" xml:space="preserve"><value>自定义小组件</value></data>
+  <data name="WidgetsDelete" xml:space="preserve"><value>从桌面移除</value></data>
+</root>

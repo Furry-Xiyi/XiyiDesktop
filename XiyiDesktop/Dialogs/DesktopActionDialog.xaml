@@ -1,0 +1,11 @@
+<ContentDialog
+    x:Class="XiyiDesktop.Dialogs.DesktopActionDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    DefaultButton="Primary"
+    Style="{StaticResource DefaultContentDialogStyle}">
+    <StackPanel Spacing="12">
+        <TextBlock x:Name="MessageText" TextWrapping="Wrap"/>
+        <TextBox x:Name="InputTextBox" Visibility="Collapsed" MaxLength="255"/>
+    </StackPanel>
+</ContentDialog>

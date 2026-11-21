@@ -1,0 +1,20 @@
+<Page
+    x:Class="XiyiDesktop.Pages.HomePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Grid Padding="24">
+        <StackPanel Spacing="12" HorizontalAlignment="Left">
+            <TextBlock x:Uid="SettingsHomeTitle"
+                       FontSize="28"
+                       FontWeight="SemiBold"/>
+            <TextBlock x:Uid="SettingsHomeDescription"
+                       TextWrapping="Wrap"
+                       Opacity="0.78"/>
+            <Button x:Uid="SettingsHomeOpenDesktop"
+                    HorizontalAlignment="Left"
+                    Click="OpenDesktop_Click"
+                    Style="{StaticResource AccentButtonStyle}"/>
+        </StackPanel>
+    </Grid>
+</Page>
